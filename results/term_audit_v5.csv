@@ -1,0 +1,17 @@
+term,meaning,body_count,status,note
+forget request,request event naming,19,PASS,standard term
+unlearning repair,learning-plane repair naming,25,PASS,standard term
+control plane,authorization and audit layer,12,PASS,standard term
+learning plane,model update layer,3,PASS,standard term
+MA-ABE,multi-authority attribute-based encryption,54,PASS,standard abbreviation
+UCAP,unlearning compliance audit proof object,9,PASS,standard abbreviation
+pi_auth,authorization proof,13,PASS,standard proof handle
+pi_rep,unlearning repair consistency proof,13,PASS,standard proof handle
+deletion,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+delete,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+remove,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+removal,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+erasure,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+forget-request,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+forget-scope,nonstandard body term,0,PASS,reference titles are excluded from this body scan
+model-repair,nonstandard body term,0,PASS,reference titles are excluded from this body scan

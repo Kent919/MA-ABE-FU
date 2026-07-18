@@ -1,0 +1,6 @@
+figure,vector_pdf,tiff_600dpi,caption_check
+Fig. 1,figure/Fig. 1.pdf,figure/Fig. 1.tif,MA-ABE-FU control plane and UCAP evidence fields; every evidence-field abbreviation is decoded in the figure.
+Fig. 2,figure/Fig. 2.pdf,figure/Fig. 2.tif,Policy-authenticated update-hiding game; G0-G5 show the purpose of each reduction hop.
+Fig. 3,figure/Fig. 3.pdf,figure/Fig. 3.tif,Unlearning repair quality under Dirichlet non-IID alpha=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds.
+Fig. 4,figure/Fig. 4.pdf,figure/Fig. 4.tif,Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom.
+Fig. 5,figure/Fig. 5.pdf,figure/Fig. 5.tif,Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention.

@@ -1,0 +1,21 @@
+symbol,meaning,table_ii_coverage
+M,LSSS matrix,PASS
+rho,LSSS row map,PASS
+S_F,forget scope,PASS
+Pad,padding mechanism,PASS
+e_F,padded envelope,PASS
+ch,channel transcript,PASS
+O_F,UCAP evidence object,PASS
+CT_F,MA-ABE capsule,PASS
+tag,encrypted request tag,PASS
+theta_t,pre-repair model commitment,PASS
+theta'_t,post-repair model commitment,PASS
+R,residual report,PASS
+R_auth,authorization relation,PASS
+R_rep,repair relation,PASS
+pi_auth,authorization proof,PASS
+pi_rep,repair proof,PASS
+"alpha,beta",RiskGap weights,PASS
+tau_R,audit threshold,PASS
+s_l2,L2 normalization scale,PASS
+h_prev,UCAP chain pointer,PASS

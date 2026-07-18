@@ -1,0 +1,14 @@
+{
+  "available": false,
+  "found_files": [],
+  "expected_files": [
+    "public_data/bafs/Base.csv",
+    "public_data/bafs/Variant I.csv",
+    "public_data/bafs/Variant II.csv",
+    "public_data/bafs/Variant III.csv",
+    "public_data/bafs/Variant IV.csv",
+    "public_data/bafs/Variant V.csv"
+  ],
+  "source_note": "Place the Bank Account Fraud Dataset Suite CSV files under public_data/bafs/. The common public entry is the Feedzai/BAF project with Kaggle-hosted data; Kaggle authentication is required in many environments.",
+  "run_behavior": "If at least one expected CSV is present, run_validation_v5.py evaluates the first available file."
+}

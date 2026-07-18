@@ -1,0 +1,13 @@
+figure,pdf,tiff,dpi,status,note
+Fig. 1,Fig. 1.pdf,Fig. 1.tif,"(600.0, 600.0)",PASS,vector PDF and 600 dpi TIFF present
+Fig. 2,Fig. 2.pdf,Fig. 2.tif,"(600.0, 600.0)",PASS,vector PDF and 600 dpi TIFF present
+Fig. 3,Fig. 3.pdf,Fig. 3.tif,"(600.0, 600.0)",PASS,vector PDF and 600 dpi TIFF present
+Fig. 4,Fig. 4.pdf,Fig. 4.tif,"(600.0, 600.0)",PASS,vector PDF and 600 dpi TIFF present
+Fig. 5,Fig. 5.pdf,Fig. 5.tif,"(600.0, 600.0)",PASS,vector PDF and 600 dpi TIFF present
+caption phrase: UCAP evidence,,,,PASS,figure manifest caption check
+caption phrase: G0-G5,,,,PASS,figure manifest caption check
+caption phrase: non-IID,,,,PASS,figure manifest caption check
+caption phrase: forget ratios,,,,PASS,figure manifest caption check
+caption phrase: 95% confidence,,,,PASS,figure manifest caption check
+caption phrase: BN254,,,,PASS,figure manifest caption check
+caption phrase: Malicious-server,,,,PASS,figure manifest caption check

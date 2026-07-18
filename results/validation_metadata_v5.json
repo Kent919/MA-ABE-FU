@@ -1,0 +1,40 @@
+{
+  "German Credit": {
+    "dataset": "German Credit",
+    "instances": 1000,
+    "clients": 12,
+    "rounds": 14,
+    "dirichlet_alpha": 0.35,
+    "forget_policy": "foreign worker, age<35, low checking balance",
+    "encoded_features": 62,
+    "test_policy_count": 103
+  },
+  "Bank Marketing": {
+    "dataset": "Bank Marketing",
+    "instances": 45211,
+    "clients": 24,
+    "rounds": 10,
+    "dirichlet_alpha": 0.35,
+    "forget_policy": "personal loan, age<45, cellular channel",
+    "encoded_features": 52,
+    "test_policy_count": 930
+  },
+  "BAFS_status": {
+    "available": false,
+    "found_files": [],
+    "expected_files": [
+      "public_data/bafs/Base.csv",
+      "public_data/bafs/Variant I.csv",
+      "public_data/bafs/Variant II.csv",
+      "public_data/bafs/Variant III.csv",
+      "public_data/bafs/Variant IV.csv",
+      "public_data/bafs/Variant V.csv"
+    ],
+    "source_note": "Place the Bank Account Fraud Dataset Suite CSV files under public_data/bafs/. The common public entry is the Feedzai/BAF project with Kaggle-hosted data; Kaggle authentication is required in many environments.",
+    "run_behavior": "If at least one expected CSV is present, run_validation_v5.py evaluates the first available file."
+  },
+  "pairing_backend": {
+    "py_ecc_available": true,
+    "curve": "BN254 / optimized_bn128"
+  }
+}
