@@ -136,16 +136,28 @@ def reference_audit(source):
     refs = extract_refs(source)
     rows = []
     for i, ref in enumerate(refs, 1):
-        is_reg = any(key in ref for key in ["Regulation", "Law", "Civil Code", "Guidance", "Guidelines", "Decision"])
+        is_policy_or_law = any(key in ref for key in ["Regulation", "Law", "Civil Code", "Privacy Act", "Guidance", "Guidelines", "Decision"])
+        no_doi_expected = any(key in ref for key in ["PMLR", "Cryptology ePrint Archive", "Bitcoin"])
         has_doi = "doi:" in ref.lower()
-        has_pages = "pp." in ref or "Art." in ref or "arts." in ref or "Sec." in ref
-        status = "PASS" if (has_doi or is_reg or "Bitcoin" in ref or "Cryptology ePrint" in ref) and has_pages else "CHECK"
-        if is_reg and ("Art" in ref or "arts." in ref or "Sec." in ref or "Guidance" in ref or "Guidelines" in ref):
+        has_url = "[Online]. Available:" in ref
+        has_locator = any(token in ref for token in ["pp.", "Art.", "arts.", "Sec.", "clauses", "vol.", "EBA/GL", "Guidance", "Guidelines", "UCI Machine Learning Repository"])
+        status = "FAIL"
+        doi_status = "doi present" if has_doi else "doi absent"
+        if has_doi and has_locator:
             status = "PASS"
-        rows.append([i, status, has_doi, has_pages, ref])
+        elif is_policy_or_law and has_url and has_locator:
+            status = "PASS"
+            doi_status = "official source/no DOI"
+        elif no_doi_expected and has_url:
+            status = "PASS"
+            doi_status = "public repository/no DOI"
+        elif no_doi_expected and has_locator:
+            status = "PASS"
+            doi_status = "proceedings index/no DOI"
+        rows.append([i, status, doi_status, has_locator, ref])
     newest = [r for r in refs if any(y in r for y in ["2024", "2025", "2026"]) and any(k in r for k in ["TDSC", "TIFS", "Dependable Secure Comput.", "Inf. Forensics Secur."])]
-    write_csv(REPRO / "reference_audit_v5.csv", ["index", "status", "has_doi", "has_pages_or_article", "reference"], rows)
-    ok = len(refs) >= 33 and len(newest) >= 6 and all(r[1] in {"PASS", "CHECK"} for r in rows)
+    write_csv(REPRO / "reference_audit_v5.csv", ["index", "status", "doi_status", "has_page_article_or_clause", "reference"], rows)
+    ok = len(refs) >= 33 and len(newest) >= 6 and all(r[1] == "PASS" for r in rows)
     return ok, rows, len(refs), len(newest)
 
 

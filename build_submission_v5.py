@@ -33,13 +33,13 @@ TARGET = "IEEE Transactions on Dependable and Secure Computing"
 CODE_URL = "https://github.com/Kent919/MA-ABE-FU"
 
 REFS = [
-    "Financial Action Task Force, \"Guidance on Digital Identity,\" Paris, France, 2020.",
-    "European Banking Authority, \"Guidelines on the use of remote customer onboarding solutions,\" EBA/GL/2022/15, 2022.",
-    "European Parliament and Council of the European Union, Regulation (EU) 2016/679, General Data Protection Regulation, arts. 5(2), 17, 30, and 32, 2016.",
-    "European Commission, Commission Implementing Decision (EU) 2021/914 on standard contractual clauses for the transfer of personal data to third countries, clauses 8 and 15, 2021.",
-    "Standing Committee of the National People's Congress, Personal Information Protection Law of the People's Republic of China, arts. 38-40, 44, and 47, 2021.",
-    "California State Legislature, California Consumer Privacy Act of 2018, Cal. Civ. Code Sec. 1798.105, 2018.",
-    "B. McMahan, E. Moore, D. Ramage, S. Hampson, and B. A. y Arcas, \"Communication-Efficient Learning of Deep Networks From Decentralized Data,\" in Proc. AISTATS, pp. 1273-1282, 2017.",
+    "Financial Action Task Force, \"Guidance on Digital Identity,\" Paris, France, 2020. [Online]. Available: https://www.fatf-gafi.org/en/publications/Financialinclusionandnpoissues/Digital-identity-guidance.html",
+    "European Banking Authority, \"Guidelines on the use of remote customer onboarding solutions,\" EBA/GL/2022/15, Nov. 22, 2022. [Online]. Available: https://www.eba.europa.eu/regulation-and-policy/anti-money-laundering-and-countering-financing-terrorism/guidelines-use-remote-customer-onboarding-solutions",
+    "European Parliament and Council of the European Union, Regulation (EU) 2016/679, General Data Protection Regulation, OJ L 119, pp. 1-88, May 4, 2016, arts. 5(2), 17, 30, and 32. [Online]. Available: https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+    "European Commission, Commission Implementing Decision (EU) 2021/914 on standard contractual clauses for the transfer of personal data to third countries, OJ L 199, pp. 31-61, Jun. 7, 2021, clauses 8 and 15. [Online]. Available: https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj",
+    "Standing Committee of the National People's Congress, Personal Information Protection Law of the People's Republic of China, Aug. 20, 2021, arts. 38-40, 44, and 47. [Online]. Available: https://www.npc.gov.cn/",
+    "California State Legislature, California Consumer Privacy Act of 2018, Cal. Civ. Code Sec. 1798.105, 2018, as amended. [Online]. Available: https://leginfo.legislature.ca.gov/",
+    "B. McMahan, E. Moore, D. Ramage, S. Hampson, and B. A. y Arcas, \"Communication-Efficient Learning of Deep Networks From Decentralized Data,\" in Proc. AISTATS, PMLR, vol. 54, pp. 1273-1282, 2017.",
     "P. Kairouz et al., \"Advances and Open Problems in Federated Learning,\" Found. Trends Mach. Learn., vol. 14, no. 1-2, pp. 1-210, 2021, doi: 10.1561/2200000083.",
     "G. Liu, X. Ma, Y. Yang, C. Wang, and J. Liu, \"FedEraser: Enabling Efficient Client-Level Data Removal From Federated Learning Models,\" in Proc. IEEE/ACM IWQoS, pp. 1-10, 2021, doi: 10.1109/IWQOS52092.2021.9521274.",
     "L. Zhang, T. Zhu, H. Zhang, P. Xiong, and W. Zhou, \"FedRecovery: Differentially Private Machine Unlearning for Federated Learning Frameworks,\" IEEE Trans. Inf. Forensics Secur., vol. 18, pp. 4732-4746, 2023, doi: 10.1109/TIFS.2023.3297905.",
@@ -50,33 +50,33 @@ REFS = [
     "S. Zhao, J. Zhang, X. Ma, Q. Jiang, Z. Ma, S. Gao, Z. Ying, and J. Ma, \"FedWiper: Federated Unlearning via Universal Adapter,\" IEEE Trans. Inf. Forensics Secur., vol. 20, pp. 4042-4054, 2025, doi: 10.1109/TIFS.2025.3557671.",
     "K. Gao, T. Zhu, D. Ye, B. Liu, and W. Zhou, \"Hidden Threats in Federated Unlearning: Camouflaged Poisoning Attacks and Their Unlearning Consequences,\" IEEE Trans. Dependable Secure Comput., vol. 23, no. 2, pp. 2934-2948, Mar. 2026, doi: 10.1109/TDSC.2025.3630811.",
     "L. Bourtoule et al., \"Machine Unlearning,\" in Proc. IEEE Symp. Security and Privacy, pp. 141-159, 2021, doi: 10.1109/SP40001.2021.00019.",
-    "C. Guo, T. Goldstein, A. Hannun, and L. van der Maaten, \"Certified Data Removal From Machine Learning Models,\" in Proc. ICML, pp. 3832-3842, 2020.",
-    "S. Garg, S. Goldwasser, and P. N. Vasudevan, \"Formalizing Data Deletion in the Context of the Right to Be Forgotten,\" in EUROCRYPT, pp. 373-402, 2020.",
+    "C. Guo, T. Goldstein, A. Hannun, and L. van der Maaten, \"Certified Data Removal From Machine Learning Models,\" in Proc. ICML, PMLR, vol. 119, pp. 3832-3842, 2020.",
+    "S. Garg, S. Goldwasser, and P. N. Vasudevan, \"Formalizing Data Deletion in the Context of the Right to Be Forgotten,\" in EUROCRYPT, LNCS, vol. 12106, pp. 373-402, 2020, doi: 10.1007/978-3-030-45724-2_13.",
     "Z. Liu, Y. Jiang, J. Shen, M. Peng, K.-Y. Lam, X. Yuan, and X. Liu, \"A Survey on Federated Unlearning: Challenges, Methods, and Future Directions,\" ACM Comput. Surv., vol. 57, no. 1, pp. 1-38, Jan. 2025, doi: 10.1145/3679014.",
     "T. T. Nguyen et al., \"A Survey of Machine Unlearning,\" ACM Trans. Intell. Syst. Technol., vol. 16, no. 5, Art. 108, 2025, doi: 10.1145/3749987.",
     "F. Wang, B. Li, and B. Li, \"Federated Unlearning and Its Privacy Threats,\" IEEE Network, vol. 38, no. 2, pp. 294-300, Mar.-Apr. 2024, doi: 10.1109/MNET.004.2300056.",
-    "A. Sahai and B. Waters, \"Fuzzy Identity-Based Encryption,\" in EUROCRYPT, pp. 457-473, 2005.",
-    "V. Goyal, O. Pandey, A. Sahai, and B. Waters, \"Attribute-Based Encryption for Fine-Grained Access Control of Encrypted Data,\" in Proc. ACM CCS, pp. 89-98, 2006.",
-    "J. Bethencourt, A. Sahai, and B. Waters, \"Ciphertext-Policy Attribute-Based Encryption,\" in Proc. IEEE Symp. Security and Privacy, pp. 321-334, 2007.",
-    "M. Chase, \"Multi-Authority Attribute Based Encryption,\" in TCC, pp. 515-534, 2007.",
-    "A. Lewko and B. Waters, \"Decentralizing Attribute-Based Encryption,\" in EUROCRYPT, pp. 568-588, 2011.",
-    "B. Waters, \"Ciphertext-Policy Attribute-Based Encryption: An Expressive, Efficient, and Provably Secure Realization,\" in PKC, pp. 53-70, 2011.",
-    "Y. Zhang, R. H. Deng, S. Xu, J. Sun, Q. Li, and D. Wu, \"Attribute-Based Encryption for Cloud Computing Access Control: A Survey,\" ACM Comput. Surv., vol. 53, no. 4, pp. 1-37, 2020.",
+    "A. Sahai and B. Waters, \"Fuzzy Identity-Based Encryption,\" in EUROCRYPT, LNCS, vol. 3494, pp. 457-473, 2005, doi: 10.1007/11426639_27.",
+    "V. Goyal, O. Pandey, A. Sahai, and B. Waters, \"Attribute-Based Encryption for Fine-Grained Access Control of Encrypted Data,\" in Proc. ACM CCS, pp. 89-98, 2006, doi: 10.1145/1180405.1180418.",
+    "J. Bethencourt, A. Sahai, and B. Waters, \"Ciphertext-Policy Attribute-Based Encryption,\" in Proc. IEEE Symp. Security and Privacy, pp. 321-334, 2007, doi: 10.1109/SP.2007.11.",
+    "M. Chase, \"Multi-Authority Attribute Based Encryption,\" in TCC, LNCS, vol. 4392, pp. 515-534, 2007, doi: 10.1007/978-3-540-70936-7_28.",
+    "A. Lewko and B. Waters, \"Decentralizing Attribute-Based Encryption,\" in EUROCRYPT, LNCS, vol. 6632, pp. 568-588, 2011, doi: 10.1007/978-3-642-20465-4_31.",
+    "B. Waters, \"Ciphertext-Policy Attribute-Based Encryption: An Expressive, Efficient, and Provably Secure Realization,\" in PKC, LNCS, vol. 6571, pp. 53-70, 2011, doi: 10.1007/978-3-642-19379-8_4.",
+    "Y. Zhang, R. H. Deng, S. Xu, J. Sun, Q. Li, and D. Wu, \"Attribute-Based Encryption for Cloud Computing Access Control: A Survey,\" ACM Comput. Surv., vol. 53, no. 4, pp. 1-41, 2020, doi: 10.1145/3398036.",
     "X. Xing, Y. Liu, Q. Wu, Z. Guan, D. Li, D. Li, Y. Lu, and W. Susilo, \"Multi-Committee ABE Based Decentralized Access Control With Sharding Blockchain for Web 3.0,\" IEEE Trans. Dependable Secure Comput., vol. 22, no. 3, pp. 2533-2549, May 2025, doi: 10.1109/TDSC.2024.3520121.",
-    "D. Boneh and M. Franklin, \"Identity-Based Encryption From the Weil Pairing,\" in CRYPTO, pp. 213-229, 2001.",
-    "A. Fiat and A. Shamir, \"How to Prove Yourself: Practical Solutions to Identification Problems,\" in CRYPTO, pp. 186-194, 1986.",
-    "S. Goldwasser, S. Micali, and C. Rackoff, \"The Knowledge Complexity of Interactive Proof Systems,\" SIAM J. Comput., vol. 18, no. 1, pp. 186-208, 1989.",
-    "J. Groth, \"On the Size of Pairing-Based Non-Interactive Arguments,\" in EUROCRYPT, pp. 305-326, 2016.",
-    "B. Bunz et al., \"Bulletproofs: Short Proofs for Confidential Transactions and More,\" in Proc. IEEE Symp. Security and Privacy, pp. 315-334, 2018.",
-    "A. Gabizon, Z. J. Williamson, and O. Ciobotaru, \"PLONK: Permutations Over Lagrange-Bases for Oecumenical Noninteractive Arguments of Knowledge,\" Cryptology ePrint Archive, 2019/953, 2019.",
-    "E. Ben-Sasson, I. Bentov, Y. Horesh, and M. Riabzev, \"Scalable, Transparent, and Post-Quantum Secure Computational Integrity,\" Cryptology ePrint Archive, 2018/046, 2018.",
-    "E. Androulaki et al., \"Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains,\" in Proc. EuroSys, pp. 1-15, 2018.",
-    "S. Nakamoto, \"Bitcoin: A Peer-to-Peer Electronic Cash System,\" 2008.",
+    "D. Boneh and M. Franklin, \"Identity-Based Encryption From the Weil Pairing,\" SIAM J. Comput., vol. 32, no. 3, pp. 586-615, 2003, doi: 10.1137/S0097539701398521.",
+    "A. Fiat and A. Shamir, \"How to Prove Yourself: Practical Solutions to Identification and Signature Problems,\" in CRYPTO, LNCS, vol. 263, pp. 186-194, 1987, doi: 10.1007/3-540-47721-7_12.",
+    "S. Goldwasser, S. Micali, and C. Rackoff, \"The Knowledge Complexity of Interactive Proof Systems,\" SIAM J. Comput., vol. 18, no. 1, pp. 186-208, 1989, doi: 10.1137/0218012.",
+    "J. Groth, \"On the Size of Pairing-Based Non-Interactive Arguments,\" in EUROCRYPT, LNCS, vol. 9666, pp. 305-326, 2016, doi: 10.1007/978-3-662-49896-5_11.",
+    "B. Bunz et al., \"Bulletproofs: Short Proofs for Confidential Transactions and More,\" in Proc. IEEE Symp. Security and Privacy, pp. 315-334, 2018, doi: 10.1109/SP.2018.00020.",
+    "A. Gabizon, Z. J. Williamson, and O. Ciobotaru, \"PLONK: Permutations Over Lagrange-Bases for Oecumenical Noninteractive Arguments of Knowledge,\" Cryptology ePrint Archive, Rep. 2019/953, 2019. [Online]. Available: https://eprint.iacr.org/2019/953",
+    "E. Ben-Sasson, I. Bentov, Y. Horesh, and M. Riabzev, \"Scalable, Transparent, and Post-Quantum Secure Computational Integrity,\" Cryptology ePrint Archive, Rep. 2018/046, 2018. [Online]. Available: https://eprint.iacr.org/2018/046",
+    "E. Androulaki et al., \"Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains,\" in Proc. EuroSys, Art. no. 30, pp. 30:1-30:15, 2018, doi: 10.1145/3190508.3190538.",
+    "S. Nakamoto, \"Bitcoin: A Peer-to-Peer Electronic Cash System,\" 2008. [Online]. Available: https://bitcoin.org/bitcoin.pdf",
     "H. Hofmann, \"Statlog (German Credit Data),\" UCI Machine Learning Repository, 1994, doi: 10.24432/C5NC77.",
     "S. Moro, P. Rita, and P. Cortez, \"Bank Marketing,\" UCI Machine Learning Repository, 2014, doi: 10.24432/C5K306.",
     "S. Jesus, J. Pombal, D. Alves, A. Cruz, P. Saleiro, R. Ribeiro, J. Gama, and P. Bizarro, \"Turning the Tables: Biased, Imbalanced, Dynamic Tabular Datasets for ML Evaluation,\" in Adv. Neural Inf. Process. Syst. 35, pp. 33563-33575, 2022, doi: 10.52202/068431-2432.",
-    "R. Shokri, M. Stronati, C. Song, and V. Shmatikov, \"Membership Inference Attacks Against Machine Learning Models,\" in Proc. IEEE Symp. Security and Privacy, pp. 3-18, 2017.",
-    "S. Yeom, I. Giacomelli, M. Fredrikson, and S. Jha, \"Privacy Risk in Machine Learning: Analyzing the Connection to Overfitting,\" in Proc. IEEE CSF, pp. 268-282, 2018.",
+    "R. Shokri, M. Stronati, C. Song, and V. Shmatikov, \"Membership Inference Attacks Against Machine Learning Models,\" in Proc. IEEE Symp. Security and Privacy, pp. 3-18, 2017, doi: 10.1109/SP.2017.41.",
+    "S. Yeom, I. Giacomelli, M. Fredrikson, and S. Jha, \"Privacy Risk in Machine Learning: Analyzing the Connection to Overfitting,\" in Proc. IEEE CSF, pp. 268-282, 2018, doi: 10.1109/CSF.2018.00027.",
 ]
 
 BIOS = [
@@ -894,18 +894,34 @@ The repository contains scripts, exact CSV/JSON outputs, five vector PDF figures
 """,
         encoding="utf-8",
     )
+    (REPRO_REPO / "push_to_github.sh").write_text(
+        """#!/usr/bin/env bash
+set -euo pipefail
+
+git remote set-url origin git@github.com:Kent919/MA-ABE-FU.git
+git push -u origin main
+""",
+        encoding="utf-8",
+    )
 
 
 def package_zip():
     zip_path = ROOT / "MA-ABE-FU_TDSC_submission_package_v5.zip"
     if zip_path.exists():
         zip_path.unlink()
+    def should_package(path: Path) -> bool:
+        parts = set(path.parts)
+        if path.name == ".DS_Store" or path.name.startswith(".~"):
+            return False
+        if "__pycache__" in parts or "render_check" in parts:
+            return False
+        return True
     with ZipFile(zip_path, "w", ZIP_DEFLATED) as z:
         for f in OUT.rglob("*"):
-            if f.is_file() and f.name != ".DS_Store":
+            if f.is_file() and should_package(f):
                 z.write(f, f.relative_to(OUT.parent))
         for f in REPRO_REPO.rglob("*"):
-            if f.is_file() and f.name != ".DS_Store":
+            if f.is_file() and should_package(f):
                 z.write(f, f.relative_to(ROOT))
     return zip_path
 
