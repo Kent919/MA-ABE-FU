@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prebuild validation for the MA-ABE-FU v5 submission package."""
+"""Prebuild validation for the MA-ABE-FU v6 submission package."""
 
 from __future__ import annotations
 
@@ -13,10 +13,10 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "submission_tdsc_v5"
+OUT = ROOT / "submission_tifs_v6"
 FIG = OUT / "figure"
 REPRO = OUT / "reproducibility"
-BUILD = ROOT / "build_submission_v5.py"
+BUILD = ROOT / "build_submission_v6.py"
 
 
 def load_build_source():
@@ -63,7 +63,7 @@ def term_audit(body):
     for term in banned:
         count = lower.count(term)
         rows.append([term, "nonstandard body term", count, "PASS" if count == 0 else "FAIL", "reference titles are excluded from this body scan"])
-    write_csv(REPRO / "term_audit_v5.csv", ["term", "meaning", "body_count", "status", "note"], rows)
+    write_csv(REPRO / "term_audit_v6.csv", ["term", "meaning", "body_count", "status", "note"], rows)
     return all(r[3] != "FAIL" for r in rows), rows
 
 
@@ -97,16 +97,16 @@ def symbol_audit(body):
         else:
             present = token in body
         rows.append([token, meaning, "PASS" if present else "FAIL"])
-    write_csv(REPRO / "symbol_audit_v5.csv", ["symbol", "meaning", "table_ii_coverage"], rows)
+    write_csv(REPRO / "symbol_audit_v6.csv", ["symbol", "meaning", "table_ii_coverage"], rows)
     return all(r[2] == "PASS" for r in rows), rows
 
 
 def figure_audit():
     rows = []
-    manifest = REPRO / "figure_manifest_v5.csv"
+    manifest = REPRO / "figure_manifest_v6.csv"
     if not manifest.exists():
-        rows.append(["manifest", "", "", "", "FAIL", "missing figure_manifest_v5.csv"])
-        write_csv(REPRO / "figure_audit_v5.csv", ["figure", "pdf", "tiff", "dpi", "status", "note"], rows)
+        rows.append(["manifest", "", "", "", "FAIL", "missing figure_manifest_v6.csv"])
+        write_csv(REPRO / "figure_audit_v6.csv", ["figure", "pdf", "tiff", "dpi", "status", "note"], rows)
         return False, rows
     manifest_text = manifest.read_text(encoding="utf-8")
     required_phrases = ["UCAP evidence", "G0-G5", "non-IID", "forget ratios", "95% confidence", "BN254", "Malicious-server"]
@@ -128,8 +128,28 @@ def figure_audit():
         rows.append([f"Fig. {i}", pdf.name, tif.name, dpi, status, note])
     for phrase in required_phrases:
         rows.append([f"caption phrase: {phrase}", "", "", "", "PASS" if phrase in manifest_text else "FAIL", "figure manifest caption check"])
-    write_csv(REPRO / "figure_audit_v5.csv", ["figure", "pdf", "tiff", "dpi", "status", "note"], rows)
+    redraw = ROOT / "redraw_ieee_figures_v6.py"
+    source = redraw.read_text(encoding="utf-8") if redraw.exists() else ""
+    sizes = [float(m.group(1)) for m in re.finditer(r"size\s*=\s*([0-9]+(?:\.[0-9]+)?)", source)]
+    small = [s for s in sizes if s < 8.0]
+    rows.append(["figure font minimum", redraw.name, "", min(sizes) if sizes else "", "PASS" if sizes and not small else "FAIL", "all explicit figure text sizes must be at least 8 pt"])
+    write_csv(REPRO / "figure_audit_v6.csv", ["figure", "pdf", "tiff", "dpi", "status", "note"], rows)
     return all(r[4] == "PASS" for r in rows), rows
+
+
+def format_audit(body):
+    checks = []
+    for i in range(1, 6):
+        checks.append([f"Fig. {i}", "figure citation/caption", "PASS" if f"Fig. {i}" in body else "FAIL"])
+    for label in ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]:
+        checks.append([f"TABLE {label}", "table caption", "PASS" if f'table_caption(doc, "{label}"' in body else "FAIL"])
+    for i in range(1, 9):
+        checks.append([f"({i})", "formula number", "PASS" if f"({i})" in body else "FAIL"])
+    for i in range(1, 5):
+        checks.append([f"Algorithm {i}", "algorithm box", "PASS" if f"Algorithm {i}" in body else "FAIL"])
+    checks.append(["Fig. A1", "appendix reduction schematic", "PASS" if "Fig. A1" in body else "FAIL"])
+    write_csv(REPRO / "format_audit_v6.csv", ["item", "check", "status"], checks)
+    return all(row[2] == "PASS" for row in checks), checks
 
 
 def reference_audit(source):
@@ -156,13 +176,13 @@ def reference_audit(source):
             doi_status = "proceedings index/no DOI"
         rows.append([i, status, doi_status, has_locator, ref])
     newest = [r for r in refs if any(y in r for y in ["2024", "2025", "2026"]) and any(k in r for k in ["TDSC", "TIFS", "Dependable Secure Comput.", "Inf. Forensics Secur."])]
-    write_csv(REPRO / "reference_audit_v5.csv", ["index", "status", "doi_status", "has_page_article_or_clause", "reference"], rows)
+    write_csv(REPRO / "reference_audit_v6.csv", ["index", "status", "doi_status", "has_page_article_or_clause", "reference"], rows)
     ok = len(refs) >= 33 and len(newest) >= 6 and all(r[1] == "PASS" for r in rows)
     return ok, rows, len(refs), len(newest)
 
 
 def trace_audit():
-    files = [BUILD, ROOT / "redraw_ieee_figures_v5.py", ROOT / "run_validation_v5.py", REPRO / "figure_manifest_v5.csv"]
+    files = [BUILD, ROOT / "redraw_ieee_figures_v6.py", ROOT / "run_validation_v6.py", REPRO / "figure_manifest_v6.csv"]
     markers = [
         "Chat" + "GPT",
         "assist" + "ant",
@@ -177,7 +197,7 @@ def trace_audit():
         text = path.read_text(encoding="utf-8", errors="ignore") if path.exists() else ""
         hits = pattern.findall(text)
         rows.append([path.relative_to(ROOT), len(hits), "PASS" if not hits else "FAIL"])
-    write_csv(REPRO / "trace_audit_v5.csv", ["file", "trace_hits", "status"], rows)
+    write_csv(REPRO / "trace_audit_v6.csv", ["file", "trace_hits", "status"], rows)
     return all(r[2] == "PASS" for r in rows), rows
 
 
@@ -186,19 +206,21 @@ def main():
     term_ok, _ = term_audit(body)
     symbol_ok, _ = symbol_audit(body)
     figure_ok, _ = figure_audit()
+    format_ok, _ = format_audit(body)
     ref_ok, _, ref_count, new_ref_count = reference_audit(source)
     trace_ok, _ = trace_audit()
     summary = {
         "term_audit": term_ok,
         "symbol_audit": symbol_ok,
         "figure_audit": figure_ok,
+        "format_audit": format_ok,
         "reference_audit": ref_ok,
         "trace_audit": trace_ok,
         "reference_count": ref_count,
         "new_tdsc_tifs_count_2024_2026": new_ref_count,
-        "ready_to_build_manuscript": all([term_ok, symbol_ok, figure_ok, ref_ok, trace_ok]),
+        "ready_to_build_manuscript": all([term_ok, symbol_ok, figure_ok, format_ok, ref_ok, trace_ok]),
     }
-    (REPRO / "prebuild_validation_v5.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (REPRO / "prebuild_validation_v6.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     if not summary["ready_to_build_manuscript"]:
         raise SystemExit(1)

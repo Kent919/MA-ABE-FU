@@ -11,3 +11,4 @@ caption phrase: forget ratios,,,,PASS,figure manifest caption check
 caption phrase: 95% confidence,,,,PASS,figure manifest caption check
 caption phrase: BN254,,,,PASS,figure manifest caption check
 caption phrase: Malicious-server,,,,PASS,figure manifest caption check
+figure font minimum,redraw_ieee_figures_v6.py,,8.0,PASS,all explicit figure text sizes must be at least 8 pt

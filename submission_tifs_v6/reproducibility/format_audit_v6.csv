@@ -1,0 +1,28 @@
+item,check,status
+Fig. 1,figure citation/caption,PASS
+Fig. 2,figure citation/caption,PASS
+Fig. 3,figure citation/caption,PASS
+Fig. 4,figure citation/caption,PASS
+Fig. 5,figure citation/caption,PASS
+TABLE I,table caption,PASS
+TABLE II,table caption,PASS
+TABLE III,table caption,PASS
+TABLE IV,table caption,PASS
+TABLE V,table caption,PASS
+TABLE VI,table caption,PASS
+TABLE VII,table caption,PASS
+TABLE VIII,table caption,PASS
+TABLE IX,table caption,PASS
+(1),formula number,PASS
+(2),formula number,PASS
+(3),formula number,PASS
+(4),formula number,PASS
+(5),formula number,PASS
+(6),formula number,PASS
+(7),formula number,PASS
+(8),formula number,PASS
+Algorithm 1,algorithm box,PASS
+Algorithm 2,algorithm box,PASS
+Algorithm 3,algorithm box,PASS
+Algorithm 4,algorithm box,PASS
+Fig. A1,appendix reduction schematic,PASS

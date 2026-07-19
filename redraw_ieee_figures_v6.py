@@ -19,7 +19,7 @@ from reportlab.pdfgen import canvas
 
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "submission_tdsc_v5"
+OUT = ROOT / "submission_tifs_v6"
 FIG = OUT / "figure"
 REPRO = OUT / "reproducibility"
 PDFTOCAIRO = Path(os.environ.get("PDFTOCAIRO") or shutil.which("pdftocairo") or "pdftocairo")
@@ -256,10 +256,10 @@ def clear_generated_figures():
 
 
 def panel_title(fig, x, y, panel, title, subtitle=""):
-    fig.text(x, y, panel, size=10.5, bold=True)
-    fig.text(x + 14, y, title, size=10.2, bold=True)
+    fig.text(x, y, panel, size=11.0, bold=True)
+    fig.text(x + 15, y, title, size=10.8, bold=True)
     if subtitle:
-        fig.text(x + 14, y + 12, subtitle, size=7.2, color=MUTED)
+        fig.text(x + 15, y + 13, subtitle, size=8.2, color=MUTED)
 
 
 def draw_axes(fig, box, x_label="", y_label="", x_ticks=None, y_ticks=None, x_fmt="{:.2f}", y_fmt="{:.2f}"):
@@ -271,17 +271,17 @@ def draw_axes(fig, box, x_label="", y_label="", x_ticks=None, y_ticks=None, x_fm
         for val in vals:
             y = data_map(val, lo, hi, y1, y0)
             fig.line(x0, y, x1, y, color=GRID, width=0.35)
-            fig.text(x0 - 4, y + 2.5, y_fmt.format(val), size=6.5, color=MUTED, align="right")
+            fig.text(x0 - 4, y + 2.5, y_fmt.format(val), size=8.0, color=MUTED, align="right")
     if x_ticks:
         lo, hi, vals = x_ticks
         for val in vals:
             x = data_map(val, lo, hi, x0, x1)
             fig.line(x, y1, x, y1 + 3, width=0.5)
-            fig.text(x, y1 + 11, x_fmt.format(val), size=6.5, color=MUTED, align="center")
+            fig.text(x, y1 + 12, x_fmt.format(val), size=8.0, color=MUTED, align="center")
     if x_label:
-        fig.text((x0 + x1) / 2, y1 + 24, x_label, size=7.2, color=MUTED, bold=True, align="center")
+        fig.text((x0 + x1) / 2, y1 + 25, x_label, size=8.1, color=MUTED, bold=True, align="center")
     if y_label:
-        fig.text(x0, y0 - 13, y_label, size=7.0, color=MUTED, bold=True)
+        fig.text(x0, y0 - 14, y_label, size=8.0, color=MUTED, bold=True)
 
 
 def method_legend(fig, x, y, methods, columns=3):
@@ -290,80 +290,82 @@ def method_legend(fig, x, y, methods, columns=3):
         yy = y + (i // columns) * 14
         fig.line(xx, yy, xx + 18, yy, color=COLORS[method], width=1.4, dash=LINE_DASH.get(method, []))
         fig.marker(xx + 9, yy, method, r=2.6)
-        fig.text(xx + 24, yy + 2.5, SHORT[method], size=7.1, bold=(method == "MA-ABE-FU"))
+        fig.text(xx + 24, yy + 2.5, SHORT[method], size=8.2, bold=(method == "MA-ABE-FU"))
 
 
 def fig1_protocol():
-    fig = VFigure("Fig. 1", 4.35)
+    fig = VFigure("Fig. 1", 4.05)
     fig.text(16, 21, "MA-ABE-FU protocol surface and UCAP evidence fields", size=12.0, bold=True)
-    fig.text(16, 35, "Control plane authorization and learning-plane unlearning repair are separated, then transcript-bound for audit.", size=7.4, color=MUTED)
+    fig.text(16, 35, "Control plane authorization and learning-plane unlearning repair are separated, then transcript-bound for audit.", size=8.0, color=MUTED)
 
     boxes = [
-        (18, 62, 86, 54, "Authorities", "AA_i issues GID-bound attribute keys; mpk_i is public.", BLUE),
-        (116, 62, 86, 54, "Forget request", "Rq encrypts tag in CT_F under P=(M,rho) and proves pi_auth.", GREEN),
-        (214, 62, 86, 54, "Padded channel", "Pad makes forget request and ordinary update share visible shape.", ORANGE),
-        (312, 62, 86, 54, "Unlearning repair", "Repair(theta_t,D\\S_F,cfg) returns theta'_t and report R.", SKY),
-        (410, 62, 86, 54, "Audit verify", "Aud checks pi_auth, pi_rep, sigma_AS, h_prev, and RiskGap.", RED),
+        (18, 62, 86, 54, "Authorities", "Issue GID-bound keys; publish mpk_i.", BLUE),
+        (116, 62, 86, 54, "Forget request", "CT_F hides tag; pi_auth proves P.", GREEN),
+        (214, 62, 86, 54, "Padded channel", "Pad matches ordinary update length and timing.", ORANGE),
+        (312, 62, 86, 54, "Unlearning repair", "Repair on D\\S_F outputs theta'_t and report R.", SKY),
+        (410, 62, 86, 54, "Audit verify", "Check proofs, signature, chain, and RiskGap.", RED),
     ]
     for x, y, w, h, head, body, color in boxes:
         fig.rect(x, y, w, h, fill=LIGHT, stroke=color, width=1.3, radius=5)
         fig.text(x + 5, y + 13, head, size=8.0, bold=True, color=color)
-        fig.wrapped(x + 5, y + 25, body, w - 10, size=6.5, color=INK)
+        fig.wrapped(x + 5, y + 25, body, w - 10, size=8.0, color=INK, leading=9.4)
     for i in range(len(boxes) - 1):
-        x = boxes[i][0] + boxes[i][2]
-        fig.arrow(x + 5, 89, x + 24, 89)
+        x_start = boxes[i][0] + boxes[i][2] + 3
+        x_end = boxes[i + 1][0] - 3
+        fig.arrow(x_start, 89, x_end, 89)
 
     fig.rect(32, 144, 452, 130, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
     fig.text(44, 160, "UCAP evidence object O_F", size=9.8, bold=True)
     fields = [
         ("c_P=H(P)", "policy commitment"),
-        ("c_s=H(scope)", "forget request scope commitment"),
-        ("H(ch)", "padded-channel transcript hash"),
+        ("c_s=H(scope)", "scope commitment"),
+        ("H(ch)", "channel hash"),
         ("H(theta_t)", "pre-repair model commitment"),
         ("H(theta'_t)", "post-repair model commitment"),
-        ("H(R)", "residual-risk report commitment"),
-        ("pi_auth", "ZK proof of authorized policy satisfaction"),
-        ("pi_rep", "ZK proof of unlearning repair consistency"),
-        ("sigma_AS", "server signature over the evidence object"),
-        ("h_prev", "previous UCAP hash-chain pointer"),
+        ("H(R)", "risk-report commitment"),
+        ("pi_auth", "authorization proof"),
+        ("pi_rep", "repair proof"),
+        ("sigma_AS", "AS signature"),
+        ("h_prev", "UCAP chain pointer"),
     ]
     for i, (field, desc) in enumerate(fields):
         col = i % 2
         row = i // 2
         x = 48 + col * 218
         y = 181 + row * 16
-        fig.rect(x, y - 8, 58, 12, fill=lighten(BLUE if col == 0 else GREEN, 0.72), stroke=GRID, width=0.3, radius=2)
-        fig.text(x + 3, y + 1, field, size=6.4, bold=True, color=INK)
-        fig.text(x + 65, y + 1, desc, size=6.2, color=MUTED)
-    fig.text(44, 265, "The server receives commitments and proof handles, not plaintext policy attributes; model influence is measured by RiskGap.", size=6.7, color=MUTED)
+        fig.rect(x, y - 9, 66, 13, fill=lighten(BLUE if col == 0 else GREEN, 0.72), stroke=GRID, width=0.3, radius=2)
+        fig.text(x + 3, y + 1, field, size=8.0, bold=True, color=INK)
+        fig.text(x + 75, y + 1, desc, size=8.0, color=MUTED)
+    fig.text(44, 265, "The server sees commitments and proof handles; RiskGap reports model residue.", size=8.0, color=MUTED)
     fig.save()
 
 
 def fig2_security_game():
-    fig = VFigure("Fig. 2", 4.25)
+    fig = VFigure("Fig. 2", 3.90)
     fig.text(16, 21, "Policy-authenticated update-hiding game and reduction purpose", size=12.0, bold=True)
-    fig.text(16, 35, "Each hop bounds one observable advantage: commitments, policy capsule, channel shape, audit forgery, and false proofs.", size=7.4, color=MUTED)
+    fig.text(16, 35, "Each hop bounds one observable advantage: commitments, policy capsule, channel shape, audit forgery, and false proofs.", size=8.0, color=MUTED)
 
     stages = [
         ("G0", "Real game", "A receives View_b for ordinary update or forget request.", BLUE),
-        ("G1", "Commitments", "Replace H(.) by lazy random-oracle values; reduce collisions.", GREEN),
-        ("G2", "MA-ABE", "Swap CT_F tag under unsatisfied challenge policy.", ORANGE),
-        ("G3", "Padding", "Replace visible envelope metadata by Pad distribution.", SKY),
-        ("G4", "UCAP chain", "Reject forged evidence unless sigma_AS or h_prev breaks.", RED),
-        ("G5", "ZK soundness", "Reject false pi_auth/pi_rep; only residual RiskGap remains.", PINK),
+        ("G1", "Commitments", "Lazy-sample H(.) values; reduce collision events.", GREEN),
+        ("G2", "MA-ABE", "Swap CT_F tag under an unsatisfied policy.", ORANGE),
+        ("G3", "Padding", "Replace visible metadata by Pad distribution.", SKY),
+        ("G4", "UCAP chain", "Reject forged evidence unless signature or chain breaks.", RED),
+        ("G5", "Proofs", "Reject false proofs; residual RiskGap remains.", PINK),
     ]
-    x0, y0 = 18, 72
-    w, h, gap = 70, 68, 14
+    x0, y0 = 12, 72
+    w, h, gap = 75, 76, 6
     for i, (gid, head, body, color) in enumerate(stages):
         x = x0 + i * (w + gap)
         fig.rect(x, y0, w, h, fill=LIGHT, stroke=color, width=1.2, radius=5)
-        fig.text(x + 5, y0 + 13, f"{gid}: {head}", size=7.8, bold=True, color=color)
-        fig.wrapped(x + 5, y0 + 27, body, w - 10, size=6.1, color=INK)
+        fig.text(x + 5, y0 + 13, f"{gid}: {head}", size=8.2, bold=True, color=color)
+        fig.wrapped(x + 5, y0 + 29, body, w - 10, size=8.0, color=INK, leading=9.5)
         if i < len(stages) - 1:
             fig.arrow(x + w + 2, y0 + h / 2, x + w + gap - 2, y0 + h / 2)
-    fig.rect(35, 173, 446, 82, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
-    fig.text(48, 190, "Reduction bound", size=9.0, bold=True)
-    fig.text(48, 207, "Adv_pauh(A) <= Adv_MA-ABE(B1) + Adv_RO(B2) + Adv_PAD(B3) + Adv_SIG(B4) + Adv_ZK(B5) + eps_R + negl(lambda)", size=7.0, color=INK)
+    fig.rect(35, 182, 446, 86, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
+    fig.text(48, 199, "Reduction bound", size=9.8, bold=True)
+    fig.text(48, 217, "Adv_auth(A) <= Adv_MA-ABE(B1) + Adv_RO(B2) + Adv_PAD(B3) + Adv_SIG(B4)", size=8.0, color=INK)
+    fig.text(48, 230, "+ Adv_ZK(B5) + eps_R + negl(lambda)", size=8.0, color=INK)
     notes = [
         ("B1", "policy capsule indistinguishability"),
         ("B2", "commitment consistency"),
@@ -373,15 +375,15 @@ def fig2_security_game():
     ]
     for i, (name, desc) in enumerate(notes):
         x = 48 + (i % 3) * 142
-        y = 228 + (i // 3) * 15
-        fig.text(x, y, f"{name}: {desc}", size=6.5, color=MUTED)
+        y = 249 + (i // 3) * 15
+        fig.text(x, y, f"{name}: {desc}", size=8.0, color=MUTED)
     fig.save()
 
 
 def fig3_results(raw):
-    fig = VFigure("Fig. 3", 5.55)
+    fig = VFigure("Fig. 3", 5.85)
     fig.text(16, 20, "Unlearning repair quality under non-IID federated partitions", size=12.0, bold=True)
-    fig.text(16, 34, "Dirichlet alpha=0.35; forget ratios 0.25, 0.50, and 1.00; error bars show 95% confidence intervals over seeds.", size=7.3, color=MUTED)
+    fig.text(16, 34, "Dirichlet alpha=0.35; forget ratios 0.25, 0.50, and 1.00; error bars show 95% confidence intervals over seeds.", size=8.0, color=MUTED)
     method_legend(fig, 76, 58, METHODS, columns=3)
 
     def dot_panel(box, dataset, metric, lo, hi, panel, title, fmt="{:.3f}"):
@@ -398,16 +400,17 @@ def fig3_results(raw):
             xe = e * (x1 - x0 - 94) / (hi - lo)
             fig.line(x - xe, y, x + xe, y, color=COLORS[method], width=1.2)
             fig.marker(x, y, method, r=3.1)
-            fig.text(x0, y + 2.4, SHORT[method], size=6.7, color=INK, bold=(method == "MA-ABE-FU"))
-            fig.text(x1 - 1, y + 2.4, fmt.format(m), size=6.4, color=MUTED, align="right")
+            fig.text(x0, y + 2.4, SHORT[method], size=8.0, color=INK, bold=(method == "MA-ABE-FU"))
+            fig.text(x1 - 1, y + 2.4, fmt.format(m), size=8.0, color=MUTED, align="right")
 
     dot_panel((24, 106, 250, 226), "German Credit", "retained_auc", 0.73, 0.78, "a", "Retained AUC")
     dot_panel((278, 106, 504, 226), "Bank Marketing", "retained_auc", 0.79, 0.825, "b", "Retained AUC")
 
     def line_panel(box, dataset, metric, lo, hi, panel, title, ylabel):
         x0, y0, x1, y1 = box
-        panel_title(fig, x0, y0 - 18, panel, title, dataset)
-        draw_axes(fig, (x0 + 36, y0, x1 - 8, y1), "forget ratio", ylabel, (0.25, 1.0, [0.25, 0.5, 1.0]), (lo, hi, np.linspace(lo, hi, 4)))
+        panel_title(fig, x0, y0 - 28, panel, title, dataset)
+        draw_axes(fig, (x0 + 40, y0, x1 - 10, y1), "forget ratio", "", (0.25, 1.0, [0.25, 0.5, 1.0]), (lo, hi, np.linspace(lo, hi, 4)))
+        fig.text(x0 + 44, y0 + 10, ylabel, size=8.2, color=MUTED, bold=True)
         for method in METHODS:
             pts = []
             for ratio in [0.25, 0.5, 1.0]:
@@ -416,7 +419,7 @@ def fig3_results(raw):
                     continue
                 m = float(np.nanmean(vals))
                 e = ci(vals)
-                x = data_map(ratio, 0.25, 1.0, x0 + 36, x1 - 8)
+                x = data_map(ratio, 0.25, 1.0, x0 + 40, x1 - 10)
                 y = data_map(m, lo, hi, y1, y0)
                 ye = e * (y1 - y0) / (hi - lo)
                 fig.line(x, y - ye, x, y + ye, color=COLORS[method], width=0.7)
@@ -427,15 +430,15 @@ def fig3_results(raw):
             for x, y in pts:
                 fig.marker(x, y, method, r=2.6)
 
-    line_panel((28, 296, 248, 366), "German Credit", "mia_gap", 0.0, 0.10, "c", "Membership residue", "MIA gap")
-    line_panel((286, 296, 506, 366), "Bank Marketing", "l2_to_oracle", 0.0, 0.17, "d", "Distance to oracle", "L2")
+    line_panel((28, 312, 248, 384), "German Credit", "mia_gap", 0.0, 0.10, "c", "Membership residue", "MIA gap")
+    line_panel((286, 312, 506, 384), "Bank Marketing", "l2_to_oracle", 0.0, 0.17, "d", "Distance to oracle", "L2")
     fig.save()
 
 
 def fig4_crypto(crypto):
-    fig = VFigure("Fig. 4", 4.35)
+    fig = VFigure("Fig. 4", 4.85)
     fig.text(16, 20, "Measured cryptographic overhead of the control plane", size=12.0, bold=True)
-    fig.text(16, 34, "Primitive proxy and BN254 pairing backend are measured on the same local runtime; timings are end-to-end per forget request.", size=7.3, color=MUTED)
+    fig.text(16, 34, "Primitive proxy and BN254 pairing backend are measured on the same local runtime; timings are end-to-end per forget request.", size=8.0, color=MUTED)
 
     prim = crypto[crypto["backend"] == "primitive_modexp_proxy"].copy()
     bn = crypto[crypto["backend"] == "bn254_pairing_py_ecc"].copy()
@@ -444,11 +447,11 @@ def fig4_crypto(crypto):
     x_ticks = [4, 8, 16, 24, 32, 48]
     y_ticks = [20, 50, 100, 300, 1000, 3000]
     draw_axes(fig, (x0, y0, x1, y1), "LSSS policy rows", "", (4, 48, x_ticks), None, "{:.0f}", "{:.1f}")
-    fig.text(x0, y0 - 12, "latency (ms, log scale)", size=6.8, color=MUTED, bold=True)
+    fig.text(x0, y0 - 12, "latency (ms, log scale)", size=8.0, color=MUTED, bold=True)
     for val in y_ticks:
         y = data_map(math.log10(val), math.log10(20), math.log10(3200), y1, y0)
         fig.line(x0, y, x1, y, color=GRID, width=0.35)
-        fig.text(x0 - 4, y + 2.4, str(val), size=6.3, color=MUTED, align="right")
+        fig.text(x0 - 4, y + 2.4, str(val), size=8.0, color=MUTED, align="right")
     series = [("primitive proxy", prim, BLUE, [], "FedAvg-Full")]
     for auth, color, dash in [(2, GREEN, [5, 2]), (4, ORANGE, [2, 2]), (6, PINK, [7, 3])]:
         sub = bn[bn["authority_count"] == auth]
@@ -469,11 +472,11 @@ def fig4_crypto(crypto):
         y = 216 + (i // 2) * 14
         fig.line(x, y, x + 18, y, color=color, width=1.3, dash=dash)
         fig.marker(x + 9, y, marker, r=2.4, fill=color)
-        fig.text(x + 24, y + 2.5, label, size=6.8)
+        fig.text(x + 24, y + 2.5, label, size=8.0)
 
     panel_title(fig, 22, 247, "b", "Audit-chain micro-costs", "primitive backend, linear milliseconds")
-    x0b, y0b, x1b, y1b = 48, 264, 504, 302
-    draw_axes(fig, (x0b, y0b, x1b, y1b), "LSSS policy rows", "", (4, 48, x_ticks), (0, 1.25, [0, 0.4, 0.8, 1.2]), "{:.0f}", "{:.1f}")
+    x0b, y0b, x1b, y1b = 48, 268, 504, 316
+    draw_axes(fig, (x0b, y0b, x1b, y1b), "", "", (4, 48, x_ticks), (0, 1.25, [0, 0.4, 0.8, 1.2]), "{:.0f}", "{:.1f}")
     comps = [
         ("padded_envelope_hmac_ms", "HMAC padded envelope", GREEN, []),
         ("ucap_rsa_pss_sign_ms", "RSA-PSS sign", RED, [5, 2]),
@@ -487,10 +490,10 @@ def fig4_crypto(crypto):
         "hash-chain append": "hash append",
     }
     label_y = {
-        "RSA-PSS sign": 254,
-        "hash-chain append": 273,
-        "HMAC padded envelope": 290,
-        "RSA-PSS verify": 306,
+        "RSA-PSS sign": 271,
+        "hash-chain append": 289,
+        "HMAC padded envelope": 305,
+        "RSA-PSS verify": 322,
     }
     for col, label, color, dash in comps:
         pts = []
@@ -505,14 +508,14 @@ def fig4_crypto(crypto):
         if pts:
             tx, ty = pts[-1]
             fig.line(tx - 1, ty, x1b - 55, label_y[label], color=color, width=0.35, dash=[1, 1])
-            fig.text(x1b - 4, label_y[label] + 2, short_label[label], size=5.7, color=color, align="right")
+            fig.text(x1b - 4, label_y[label] + 2, short_label[label], size=8.0, color=color, align="right")
     fig.save()
 
 
 def fig5_leakage(raw):
     fig = VFigure("Fig. 5", 4.65)
     fig.text(16, 20, "Malicious-server leakage: request type and hidden policy attributes", size=12.0, bold=True)
-    fig.text(16, 34, "Non-IID alpha=0.35; forget ratios 0.25, 0.50, and 1.00; points and bars report mean AUC with 95% confidence intervals over all runs.", size=7.3, color=MUTED)
+    fig.text(16, 34, "Non-IID alpha=0.35; forget ratios 0.25, 0.50, and 1.00; points and bars report mean AUC with 95% confidence intervals over all runs.", size=8.0, color=MUTED)
 
     stats = []
     for method in METHODS:
@@ -535,12 +538,12 @@ def fig5_leakage(raw):
     x0, y0, x1, y1 = 60, 82, 280, 255
     panel_title(fig, 24, 64, "a", "Observable metadata leakage", "random guessing is 0.5")
     draw_axes(fig, (x0, y0, x1, y1), "request-type leakage AUC", "", (0.5, 1.0, [0.5, 0.7, 0.9, 1.0]), (0.5, 1.0, [0.5, 0.7, 0.9, 1.0]), "{:.1f}", "{:.1f}")
-    fig.text(x0 + 4, y0 + 11, "attribute leakage AUC", size=6.8, color=MUTED, bold=True)
+    fig.text(x0 + 4, y0 + 11, "attribute leakage AUC", size=8.0, color=MUTED, bold=True)
     fig.line(x0, data_map(0.5, 0.5, 1.0, y1, y0), x1, data_map(0.5, 0.5, 1.0, y1, y0), color=MUTED, width=0.7, dash=[3, 2])
     fig.line(data_map(0.5, 0.5, 1.0, x0, x1), y0, data_map(0.5, 0.5, 1.0, x0, x1), y1, color=MUTED, width=0.7, dash=[3, 2])
     fig.rect(x0 + 5, y1 - 65, 86, 28, fill=(238, 247, 244), stroke=lighten(GREEN, 0.35), width=0.5, radius=3)
-    fig.text(x0 + 9, y1 - 50, "privacy-favorable", size=6.4, bold=True, color=GREEN)
-    fig.text(x0 + 9, y1 - 39, "near-random in both tests", size=5.8, color=MUTED)
+    fig.text(x0 + 9, y1 - 50, "privacy-favorable", size=8.0, bold=True, color=GREEN)
+    fig.text(x0 + 9, y1 - 39, "near-random in both tests", size=8.0, color=MUTED)
     for _, row in stats.iterrows():
         method = row["method"]
         x = data_map(row["type"], 0.5, 1.0, x0, x1)
@@ -551,7 +554,7 @@ def fig5_leakage(raw):
         fig.line(x, y - ye, x, y + ye, color=COLORS[method], width=0.9)
         fig.marker(x, y, method, r=3.2)
         if method == "MA-ABE-FU":
-            fig.text(x + 15, y - 2, SHORT[method], size=6.8, bold=True, color=COLORS[method])
+            fig.text(x + 15, y - 2, SHORT[method], size=8.0, bold=True, color=COLORS[method])
 
     x0b, y0b, x1b, y1b = 344, 82, 502, 255
     panel_title(fig, 300, 64, "b", "Attribute-leakage reduction", "lower is better")
@@ -560,21 +563,21 @@ def fig5_leakage(raw):
     for tick in [0.5, 0.7, 0.9, 1.0]:
         x = data_map(tick, 0.5, 1.0, x0b, x1b)
         fig.line(x, y0b, x, y1b, color=GRID, width=0.35)
-        fig.text(x, y1b + 11, f"{tick:.1f}", size=6.4, color=MUTED, align="center")
+        fig.text(x, y1b + 12, f"{tick:.1f}", size=8.0, color=MUTED, align="center")
     for i, row in stats.iterrows():
         method = row["method"]
         y = y0b + 14 + i * 29
         x = data_map(row["attr"], 0.5, 1.0, x0b, x1b)
         fig.line(x0b, y, x, y, color=COLORS[method], width=4.8)
         fig.marker(x, y, method, r=3.0)
-        fig.text(x0b - 7, y + 2.3, SHORT[method], size=6.6, bold=(method == "MA-ABE-FU"), align="right")
+        fig.text(x0b - 7, y + 2.3, SHORT[method], size=8.0, bold=(method == "MA-ABE-FU"), align="right")
         value_x = max(x + 4, x0b + 14)
-        fig.text(value_x, y + 2.3, f"{row['attr']:.3f}", size=6.2, bold=True)
-    fig.text(x0b + 4, y1b + 27, "attribute leakage AUC", size=6.8, color=MUTED, bold=True)
+        fig.text(value_x, y + 2.3, f"{row['attr']:.3f}", size=8.0, bold=True)
+    fig.text(x0b + 4, y1b + 27, "attribute leakage AUC", size=8.0, color=MUTED, bold=True)
 
     fig.rect(52, 286, 412, 34, fill=(252, 253, 255), stroke=GRID, width=0.6, radius=4)
-    fig.text(62, 302, f"MA-ABE-FU lowers attribute leakage to {ma_attr:.3f}; FU repair proxies average {baseline_attr:.3f}.", size=7.2, bold=True)
-    fig.text(62, 314, f"The remaining request-type signal is {ma_type:.3f}, indicating that padding reduces but does not completely eliminate timing/queue observability.", size=6.5, color=MUTED)
+    fig.text(62, 302, f"MA-ABE-FU lowers attribute leakage to {ma_attr:.3f}; FU repair proxies average {baseline_attr:.3f}.", size=8.0, bold=True)
+    fig.text(62, 314, f"Remaining request-type signal is {ma_type:.3f}; padding reduces but does not eliminate timing/queue observability.", size=8.0, color=MUTED)
     fig.save()
 
 
@@ -586,7 +589,7 @@ def write_manifest():
         ("Fig. 4", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
         ("Fig. 5", "Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention."),
     ]
-    with open(REPRO / "figure_manifest_v5.csv", "w", encoding="utf-8") as f:
+    with open(REPRO / "figure_manifest_v6.csv", "w", encoding="utf-8") as f:
         f.write("figure,vector_pdf,tiff_600dpi,caption_check\n")
         for fig, caption in captions:
             f.write(f"{fig},figure/{fig}.pdf,figure/{fig}.tif,{caption}\n")
@@ -594,8 +597,8 @@ def write_manifest():
 
 def main():
     clear_generated_figures()
-    raw = pd.read_csv(REPRO / "federated_raw_v5.csv")
-    crypto = pd.read_csv(REPRO / "crypto_overhead_v5.csv")
+    raw = pd.read_csv(REPRO / "federated_raw_v6.csv")
+    crypto = pd.read_csv(REPRO / "crypto_overhead_v6.csv")
     fig1_protocol()
     fig2_security_game()
     fig3_results(raw)

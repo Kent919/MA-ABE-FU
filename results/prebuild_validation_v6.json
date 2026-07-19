@@ -2,6 +2,7 @@
   "term_audit": true,
   "symbol_audit": true,
   "figure_audit": true,
+  "format_audit": true,
   "reference_audit": true,
   "trace_audit": true,
   "reference_count": 44,

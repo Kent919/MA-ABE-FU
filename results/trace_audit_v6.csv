@@ -1,0 +1,5 @@
+file,trace_hits,status
+build_submission_v6.py,0,PASS
+redraw_ieee_figures_v6.py,0,PASS
+run_validation_v6.py,0,PASS
+submission_tifs_v6/reproducibility/figure_manifest_v6.csv,0,PASS

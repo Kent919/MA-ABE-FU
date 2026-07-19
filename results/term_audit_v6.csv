@@ -1,12 +1,12 @@
 term,meaning,body_count,status,note
-forget request,request event naming,19,PASS,standard term
-unlearning repair,learning-plane repair naming,25,PASS,standard term
-control plane,authorization and audit layer,12,PASS,standard term
+forget request,request event naming,14,PASS,standard term
+unlearning repair,learning-plane repair naming,13,PASS,standard term
+control plane,authorization and audit layer,10,PASS,standard term
 learning plane,model update layer,3,PASS,standard term
-MA-ABE,multi-authority attribute-based encryption,55,PASS,standard abbreviation
-UCAP,unlearning compliance audit proof object,9,PASS,standard abbreviation
-pi_auth,authorization proof,13,PASS,standard proof handle
-pi_rep,unlearning repair consistency proof,13,PASS,standard proof handle
+MA-ABE,multi-authority attribute-based encryption,51,PASS,standard abbreviation
+UCAP,unlearning compliance audit proof object,10,PASS,standard abbreviation
+pi_auth,authorization proof,11,PASS,standard proof handle
+pi_rep,unlearning repair consistency proof,11,PASS,standard proof handle
 deletion,nonstandard body term,0,PASS,reference titles are excluded from this body scan
 delete,nonstandard body term,0,PASS,reference titles are excluded from this body scan
 remove,nonstandard body term,0,PASS,reference titles are excluded from this body scan

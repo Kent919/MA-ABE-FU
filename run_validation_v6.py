@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Federated MA-ABE-FU validation for the v5 manuscript.
+"""Federated MA-ABE-FU validation for the v6 manuscript.
 
 The script deliberately separates two questions that are often conflated:
 
@@ -38,7 +38,7 @@ except Exception:  # pragma: no cover - dependency availability is reported in m
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "public_data"
-OUT = ROOT / "submission_tdsc_v5"
+OUT = ROOT / "submission_tifs_v6"
 FIG = OUT / "figure"
 REPRO = OUT / "reproducibility"
 
@@ -372,7 +372,7 @@ def bafs_status():
             "The common public entry is the Feedzai/BAF project with Kaggle-hosted data; "
             "Kaggle authentication is required in many environments."
         ),
-        "run_behavior": "If at least one expected CSV is present, run_validation_v5.py evaluates the first available file.",
+        "run_behavior": "If at least one expected CSV is present, run_validation_v6.py evaluates the first available file.",
     }
 
 
@@ -1089,13 +1089,13 @@ def fig6_crypto(crypto):
 
 def write_outputs(raw, summary, crypto, metadata, ablation, riskgrid):
     REPRO.mkdir(parents=True, exist_ok=True)
-    raw.to_csv(REPRO / "federated_raw_v5.csv", index=False)
-    summary.to_csv(REPRO / "federated_summary_v5.csv", index=False)
-    crypto.to_csv(REPRO / "crypto_overhead_v5.csv", index=False)
-    ablation.to_csv(REPRO / "proxy_ablation_v5.csv", index=False)
-    riskgrid.to_csv(REPRO / "riskgap_sensitivity_v5.csv", index=False)
-    (REPRO / "validation_metadata_v5.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    (REPRO / "bafs_status_v5.json").write_text(json.dumps(bafs_status(), indent=2), encoding="utf-8")
+    raw.to_csv(REPRO / "federated_raw_v6.csv", index=False)
+    summary.to_csv(REPRO / "federated_summary_v6.csv", index=False)
+    crypto.to_csv(REPRO / "crypto_overhead_v6.csv", index=False)
+    ablation.to_csv(REPRO / "proxy_ablation_v6.csv", index=False)
+    riskgrid.to_csv(REPRO / "riskgap_sensitivity_v6.csv", index=False)
+    (REPRO / "validation_metadata_v6.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    (REPRO / "bafs_status_v6.json").write_text(json.dumps(bafs_status(), indent=2), encoding="utf-8")
 
 
 def main():

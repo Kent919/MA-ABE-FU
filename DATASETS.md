@@ -14,4 +14,4 @@ The optional Bank Account Fraud Dataset Suite is evaluated only when one of thes
 - `public_data/bafs/Variant IV.csv`
 - `public_data/bafs/Variant V.csv`
 
-If no BAFS CSV is present, `run_validation_v5.py` writes `bafs_status_v5.json` and does not generate third-dataset metrics.
+If no BAFS CSV is present, `run_validation_v6.py` writes `bafs_status_v6.json` and does not generate third-dataset metrics.
