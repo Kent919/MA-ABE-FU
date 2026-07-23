@@ -19,9 +19,8 @@ from reportlab.pdfgen import canvas
 
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "submission_tifs_v7"
-FIG = OUT / "figure"
-REPRO = OUT / "reproducibility"
+FIG = ROOT / "figures"
+REPRO = ROOT / "results"
 PDFTOCAIRO = Path(os.environ.get("PDFTOCAIRO") or shutil.which("pdftocairo") or "pdftocairo")
 
 DPI = 600
@@ -589,7 +588,7 @@ def write_manifest():
         ("Fig. 4", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
         ("Fig. 5", "Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention."),
     ]
-    with open(REPRO / "figure_manifest_v7.csv", "w", encoding="utf-8") as f:
+    with open(REPRO / "figure_manifest_v8.csv", "w", encoding="utf-8") as f:
         f.write("figure,vector_pdf,tiff_600dpi,caption_check\n")
         for fig, caption in captions:
             f.write(f"{fig},figure/{fig}.pdf,figure/{fig}.tif,{caption}\n")
@@ -597,8 +596,8 @@ def write_manifest():
 
 def main():
     clear_generated_figures()
-    raw = pd.read_csv(REPRO / "federated_raw_v7.csv")
-    crypto = pd.read_csv(REPRO / "crypto_overhead_v7.csv")
+    raw = pd.read_csv(REPRO / "federated_raw_v8.csv")
+    crypto = pd.read_csv(REPRO / "crypto_overhead_v8.csv")
     fig1_protocol()
     fig2_security_game()
     fig3_results(raw)

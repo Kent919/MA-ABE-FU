@@ -1,6 +1,6 @@
 # Dataset placement
 
-The experiments use UCI German Credit and UCI Bank Marketing. The submission archive contains the local copies used for the reported run. For a public repository, place the same files as follows:
+The experiments use UCI German Credit and UCI Bank Marketing. For a local run, place public dataset files as follows:
 
 - `public_data/german.data`
 - `public_data/bank/bank-full.csv`
@@ -14,4 +14,4 @@ The optional Bank Account Fraud Dataset Suite is evaluated only when one of thes
 - `public_data/bafs/Variant IV.csv`
 - `public_data/bafs/Variant V.csv`
 
-If no BAFS CSV is present, `run_validation_v7.py` writes `bafs_status_v7.json` and does not generate third-dataset metrics.
+If no BAFS CSV is present, `run_validation_v8.py` writes `bafs_status_v8.json` and does not generate third-dataset metrics.

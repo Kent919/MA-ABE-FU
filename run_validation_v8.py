@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Federated MA-ABE-FU validation for the v7 manuscript.
+"""Federated MA-ABE-FU validation for the v8 manuscript.
 
 The script deliberately separates two questions that are often conflated:
 
@@ -38,9 +38,8 @@ except Exception:  # pragma: no cover - dependency availability is reported in m
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "public_data"
-OUT = ROOT / "submission_tifs_v7"
-FIG = OUT / "figure"
-REPRO = OUT / "reproducibility"
+FIG = ROOT / "figures"
+REPRO = ROOT / "results"
 
 INK = (16, 23, 35)
 MUTED = (83, 92, 108)
@@ -372,7 +371,7 @@ def bafs_status():
             "The common public entry is the Feedzai/BAF project with Kaggle-hosted data; "
             "Kaggle authentication is required in many environments."
         ),
-        "run_behavior": "If at least one expected CSV is present, run_validation_v7.py evaluates the first available file.",
+        "run_behavior": "If at least one expected CSV is present, run_validation_v8.py evaluates the first available file.",
     }
 
 
@@ -1089,13 +1088,13 @@ def fig6_crypto(crypto):
 
 def write_outputs(raw, summary, crypto, metadata, ablation, riskgrid):
     REPRO.mkdir(parents=True, exist_ok=True)
-    raw.to_csv(REPRO / "federated_raw_v7.csv", index=False)
-    summary.to_csv(REPRO / "federated_summary_v7.csv", index=False)
-    crypto.to_csv(REPRO / "crypto_overhead_v7.csv", index=False)
-    ablation.to_csv(REPRO / "proxy_ablation_v7.csv", index=False)
-    riskgrid.to_csv(REPRO / "riskgap_sensitivity_v7.csv", index=False)
-    (REPRO / "validation_metadata_v7.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    (REPRO / "bafs_status_v7.json").write_text(json.dumps(bafs_status(), indent=2), encoding="utf-8")
+    raw.to_csv(REPRO / "federated_raw_v8.csv", index=False)
+    summary.to_csv(REPRO / "federated_summary_v8.csv", index=False)
+    crypto.to_csv(REPRO / "crypto_overhead_v8.csv", index=False)
+    ablation.to_csv(REPRO / "proxy_ablation_v8.csv", index=False)
+    riskgrid.to_csv(REPRO / "riskgap_sensitivity_v8.csv", index=False)
+    (REPRO / "validation_metadata_v8.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    (REPRO / "bafs_status_v8.json").write_text(json.dumps(bafs_status(), indent=2), encoding="utf-8")
 
 
 def main():
