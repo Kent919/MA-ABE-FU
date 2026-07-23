@@ -329,7 +329,7 @@ def fig1_protocol():
         (18, 62, 86, 54, "Authorities", "Issue GID-bound keys; publish public keys.", BLUE),
         (116, 62, 86, 54, "Forget request", [("Capsule hides tag;", None), ([("π", None), ("auth", "sub"), (" proves P.", None)], "rich")], GREEN),
         (214, 62, 86, 54, "Padded channel", "Pad matches ordinary update length and timing.", ORANGE),
-        (312, 62, 86, 54, "Unlearning repair", [("Repair on retained data;", None), ([("outputs θ′", None), ("t", "sub"), (" and report R.", None)], "rich")], SKY),
+        (312, 62, 86, 54, "Unlearning repair", [("Repair on retained", None), ([("data; outputs θ′", None), ("t", "sub")], "rich"), ("and report R.", None)], SKY),
         (410, 62, 86, 54, "Audit verify", "Check proofs, signature, chain, and RiskGap.", RED),
     ]
     for x, y, w, h, head, body, color in boxes:
