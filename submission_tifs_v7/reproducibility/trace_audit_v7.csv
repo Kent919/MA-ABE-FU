@@ -1,0 +1,5 @@
+file,trace_hits,status
+build_submission_v7.py,0,PASS
+redraw_ieee_figures_v7.py,0,PASS
+run_validation_v7.py,0,PASS
+submission_tifs_v7/reproducibility/figure_manifest_v7.csv,0,PASS
