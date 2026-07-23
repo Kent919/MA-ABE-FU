@@ -126,6 +126,34 @@ class VFigure:
         else:
             self.c.drawString(x, yy, str(value))
 
+    def rich_width(self, parts, size=8.5, bold=False):
+        total = 0.0
+        base_font = "Helvetica-Bold" if bold else "Helvetica"
+        for value, role in parts:
+            part_size = size * 0.72 if role in {"sub", "sup"} else size
+            total += stringWidth(str(value), base_font, part_size)
+        return total
+
+    def rich_text(self, x, y, parts, size=8.5, color=INK, bold=False, align="left"):
+        base_font = "Helvetica-Bold" if bold else "Helvetica"
+        self.c.setFillColor(rgb(color))
+        width = self.rich_width(parts, size=size, bold=bold)
+        xx = x
+        if align == "center":
+            xx = x - width / 2
+        elif align == "right":
+            xx = x - width
+        for value, role in parts:
+            part_size = size * 0.72 if role in {"sub", "sup"} else size
+            part_y = y
+            if role == "sub":
+                part_y = y + size * 0.26
+            elif role == "sup":
+                part_y = y - size * 0.38
+            self.c.setFont(base_font, part_size)
+            self.c.drawString(xx, self.y(part_y), str(value))
+            xx += stringWidth(str(value), base_font, part_size)
+
     def wrapped(self, x, y, value, width, size=8.0, color=INK, bold=False, leading=None):
         font = "Helvetica-Bold" if bold else "Helvetica"
         words = str(value).split()
@@ -299,33 +327,41 @@ def fig1_protocol():
 
     boxes = [
         (18, 62, 86, 54, "Authorities", "Issue GID-bound keys; publish public keys.", BLUE),
-        (116, 62, 86, 54, "Forget request", "Capsule hides tag; πauth proves P.", GREEN),
+        (116, 62, 86, 54, "Forget request", [("Capsule hides tag;", None), ([("π", None), ("auth", "sub"), (" proves P.", None)], "rich")], GREEN),
         (214, 62, 86, 54, "Padded channel", "Pad matches ordinary update length and timing.", ORANGE),
-        (312, 62, 86, 54, "Unlearning repair", "Repair on retained data outputs θ′t and report R.", SKY),
+        (312, 62, 86, 54, "Unlearning repair", [("Repair on retained data;", None), ([("outputs θ′", None), ("t", "sub"), (" and report R.", None)], "rich")], SKY),
         (410, 62, 86, 54, "Audit verify", "Check proofs, signature, chain, and RiskGap.", RED),
     ]
     for x, y, w, h, head, body, color in boxes:
         fig.rect(x, y, w, h, fill=LIGHT, stroke=color, width=1.3, radius=5)
         fig.text(x + 5, y + 13, head, size=8.0, bold=True, color=color)
-        fig.wrapped(x + 5, y + 25, body, w - 10, size=8.0, color=INK, leading=9.4)
+        if isinstance(body, list):
+            for j, item in enumerate(body):
+                line_y = y + 25 + j * 10.0
+                if isinstance(item, tuple) and item[1] == "rich":
+                    fig.rich_text(x + 5, line_y, item[0], size=8.0, color=INK)
+                else:
+                    fig.text(x + 5, line_y, item[0], size=8.0, color=INK)
+        else:
+            fig.wrapped(x + 5, y + 25, body, w - 10, size=8.0, color=INK, leading=9.4)
     for i in range(len(boxes) - 1):
         x_start = boxes[i][0] + boxes[i][2] + 3
         x_end = boxes[i + 1][0] - 3
         fig.arrow(x_start, 89, x_end, 89)
 
     fig.rect(32, 144, 452, 130, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
-    fig.text(44, 160, "UCAP evidence object OF", size=9.8, bold=True)
+    fig.rich_text(44, 160, [("UCAP evidence object O", None), ("F", "sub")], size=9.8, bold=True)
     fields = [
-        ("cP=H(P)", "policy commitment"),
-        ("cs=H(scope)", "scope commitment"),
+        ([("c", None), ("P", "sub"), ("=H(P)", None)], "policy commitment"),
+        ([("c", None), ("s", "sub"), ("=H(scope)", None)], "scope commitment"),
         ("H(ch)", "channel hash"),
-        ("H(θt)", "pre-repair model commitment"),
-        ("H(θ′t)", "post-repair model commitment"),
+        ([("H(θ", None), ("t", "sub"), (")", None)], "pre-repair model commitment"),
+        ([("H(θ′", None), ("t", "sub"), (")", None)], "post-repair model commitment"),
         ("H(R)", "risk-report commitment"),
-        ("πauth", "authorization proof"),
-        ("πrep", "repair proof"),
-        ("σAS", "AS signature"),
-        ("hprev", "UCAP chain pointer"),
+        ([("π", None), ("auth", "sub")], "authorization proof"),
+        ([("π", None), ("rep", "sub")], "repair proof"),
+        ([("σ", None), ("AS", "sub")], "AS signature"),
+        ([("h", None), ("prev", "sub")], "UCAP chain pointer"),
     ]
     for i, (field, desc) in enumerate(fields):
         col = i % 2
@@ -333,7 +369,10 @@ def fig1_protocol():
         x = 48 + col * 218
         y = 181 + row * 16
         fig.rect(x, y - 9, 66, 13, fill=lighten(BLUE if col == 0 else GREEN, 0.72), stroke=GRID, width=0.3, radius=2)
-        fig.text(x + 3, y + 1, field, size=8.0, bold=True, color=INK)
+        if isinstance(field, list):
+            fig.rich_text(x + 3, y + 1, field, size=8.0, bold=True, color=INK)
+        else:
+            fig.text(x + 3, y + 1, field, size=8.0, bold=True, color=INK)
         fig.text(x + 75, y + 1, desc, size=8.0, color=MUTED)
     fig.text(44, 265, "The server sees commitments and proof handles; RiskGap reports model residue.", size=8.0, color=MUTED)
     fig.save()
@@ -357,14 +396,20 @@ def fig2_security_game():
     for i, (gid, head, body, color) in enumerate(stages):
         x = x0 + i * (w + gap)
         fig.rect(x, y0, w, h, fill=LIGHT, stroke=color, width=1.2, radius=5)
-        fig.text(x + 5, y0 + 13, f"{gid}: {head}", size=8.2, bold=True, color=color)
+        fig.rich_text(x + 5, y0 + 13, [("G", None), (gid[1], "sub"), (f": {head}", None)], size=8.2, bold=True, color=color)
         fig.wrapped(x + 5, y0 + 29, body, w - 10, size=8.0, color=INK, leading=9.5)
         if i < len(stages) - 1:
             fig.arrow(x + w + 2, y0 + h / 2, x + w + gap - 2, y0 + h / 2)
     fig.rect(35, 182, 446, 86, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
     fig.text(48, 199, "Reduction bound", size=9.8, bold=True)
-    fig.text(48, 217, "Advauth(A) ≤ AdvMA-ABE(B1) + AdvRO(B2) + AdvPAD(B3) + AdvSIG(B4)", size=8.0, color=INK)
-    fig.text(48, 230, "+ AdvZK(B5) + εR + negl(λ)", size=8.0, color=INK)
+    fig.rich_text(48, 217, [
+        ("Adv", None), ("auth", "sub"), ("(A) ≤ Adv", None), ("MA-ABE", "sub"),
+        ("(B", None), ("1", "sub"), (") + Adv", None), ("RO", "sub"), ("(B", None), ("2", "sub"),
+        (") + Adv", None), ("PAD", "sub"), ("(B", None), ("3", "sub"), (") + Adv", None), ("SIG", "sub"), ("(B", None), ("4", "sub"), (")", None)
+    ], size=8.0, color=INK)
+    fig.rich_text(48, 230, [
+        ("+ Adv", None), ("ZK", "sub"), ("(B", None), ("5", "sub"), (") + ε", None), ("R", "sub"), (" + negl(λ)", None)
+    ], size=8.0, color=INK)
     notes = [
         ("B1", "policy capsule indistinguishability"),
         ("B2", "commitment consistency"),
@@ -375,7 +420,8 @@ def fig2_security_game():
     for i, (name, desc) in enumerate(notes):
         x = 48 + (i % 3) * 142
         y = 249 + (i // 3) * 15
-        fig.text(x, y, f"{name}: {desc}", size=8.0, color=MUTED)
+        label = [("B", None), (name[1], "sub"), (f": {desc}", None)]
+        fig.rich_text(x, y, label, size=8.0, color=MUTED)
     fig.save()
 
 
@@ -409,7 +455,10 @@ def fig3_results(raw):
         x0, y0, x1, y1 = box
         panel_title(fig, x0, y0 - 28, panel, title, dataset)
         draw_axes(fig, (x0 + 40, y0, x1 - 10, y1), "forget ratio", "", (0.25, 1.0, [0.25, 0.5, 1.0]), (lo, hi, np.linspace(lo, hi, 4)))
-        fig.text(x0 + 44, y0 + 10, ylabel, size=8.2, color=MUTED, bold=True)
+        if isinstance(ylabel, list):
+            fig.rich_text(x0 + 44, y0 + 10, ylabel, size=8.2, color=MUTED, bold=True)
+        else:
+            fig.text(x0 + 44, y0 + 10, ylabel, size=8.2, color=MUTED, bold=True)
         for method in METHODS:
             pts = []
             for ratio in [0.25, 0.5, 1.0]:
@@ -430,7 +479,7 @@ def fig3_results(raw):
                 fig.marker(x, y, method, r=2.6)
 
     line_panel((28, 312, 248, 384), "German Credit", "mia_gap", 0.0, 0.10, "c", "Membership residue", "MIA gap")
-    line_panel((286, 312, 506, 384), "Bank Marketing", "l2_to_oracle", 0.0, 0.17, "d", "Distance to oracle", "L2")
+    line_panel((286, 312, 506, 384), "Bank Marketing", "l2_to_oracle", 0.0, 0.17, "d", "Distance to oracle", [("L", None), ("2", "sub")])
     fig.save()
 
 
