@@ -255,7 +255,13 @@ class VFigure:
 
 def render_to_tiff(pdf_path: Path, tiff_path: Path):
     if not PDFTOCAIRO.exists():
-        raise FileNotFoundError(f"pdftocairo not found at {PDFTOCAIRO}")
+        import pypdfium2 as pdfium
+
+        pdf = pdfium.PdfDocument(str(pdf_path))
+        page = pdf[0]
+        bitmap = page.render(scale=DPI / 72).to_pil()
+        bitmap.save(tiff_path, compression="tiff_lzw", dpi=(DPI, DPI))
+        return
     fc_cache = ROOT / ".fontconfig-cache"
     fc_cache.mkdir(exist_ok=True)
     env = os.environ.copy()
@@ -321,60 +327,66 @@ def method_legend(fig, x, y, methods, columns=3):
 
 
 def fig1_protocol():
-    fig = VFigure("Fig. 1", 4.05)
-    fig.text(16, 21, "MA-ABE-FU protocol surface and UCAP evidence fields", size=12.0, bold=True)
-    fig.text(16, 35, "Control plane authorization and learning-plane unlearning repair are separated, then transcript-bound for audit.", size=8.0, color=MUTED)
+    fig = VFigure("Fig. 1", 4.85)
+    fig.text(16, 21, "System model and evidence-bound interaction in MA-ABE-FU", size=12.0, bold=True)
+    fig.text(16, 35, "The control plane authenticates and hides the forget policy; the learning plane performs only the approved unlearning repair.", size=8.0, color=MUTED)
 
-    boxes = [
-        (18, 62, 86, 54, "Authorities", "Issue GID-bound keys; publish public keys.", BLUE),
-        (116, 62, 86, 54, "Forget request", [("Capsule hides tag;", None), ([("π", None), ("auth", "sub"), (" proves P.", None)], "rich")], GREEN),
-        (214, 62, 86, 54, "Padded channel", "Pad matches ordinary update length and timing.", ORANGE),
-        (312, 62, 86, 54, "Unlearning repair", [("Repair on retained", None), ([("data; outputs θ′", None), ("t", "sub")], "rich"), ("and report R.", None)], SKY),
-        (410, 62, 86, 54, "Audit verify", "Check proofs, signature, chain, and RiskGap.", RED),
-    ]
-    for x, y, w, h, head, body, color in boxes:
-        fig.rect(x, y, w, h, fill=LIGHT, stroke=color, width=1.3, radius=5)
-        fig.text(x + 5, y + 13, head, size=8.0, bold=True, color=color)
-        if isinstance(body, list):
-            for j, item in enumerate(body):
-                line_y = y + 25 + j * 10.0
-                if isinstance(item, tuple) and item[1] == "rich":
-                    fig.rich_text(x + 5, line_y, item[0], size=8.0, color=INK)
-                else:
-                    fig.text(x + 5, line_y, item[0], size=8.0, color=INK)
-        else:
-            fig.wrapped(x + 5, y + 25, body, w - 10, size=8.0, color=INK, leading=9.4)
-    for i in range(len(boxes) - 1):
-        x_start = boxes[i][0] + boxes[i][2] + 3
-        x_end = boxes[i + 1][0] - 3
-        fig.arrow(x_start, 89, x_end, 89)
+    # Entity layer.
+    entities = {
+        "req": (22, 66, 86, 47, "Requester", "GID, scope, τ", GREEN),
+        "aa": (142, 58, 112, 63, "Attribute authorities", "issue GID-bound keys and public keys", BLUE),
+        "as": (292, 58, 112, 63, "Authentication server", "verifies auth proof and signs evidence", ORANGE),
+        "aud": (432, 66, 66, 47, "Auditor", "checks evidence", RED),
+        "clients": (142, 145, 262, 52, "Federated clients and learning plane", "run repair on approved retained scope; output repaired model and R", SKY),
+    }
+    for x, y, w, h, head, body, color in entities.values():
+        fig.rect(x, y, w, h, fill=LIGHT, stroke=color, width=1.25, radius=5)
+        fig.text(x + 6, y + 14, head, size=8.2, bold=True, color=color)
+        fig.wrapped(x + 6, y + 29, body, w - 12, size=8.0, color=INK, leading=9.4)
 
-    fig.rect(32, 144, 452, 130, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
-    fig.rich_text(44, 160, [("UCAP evidence object O", None), ("F", "sub")], size=9.8, bold=True)
+    fig.arrow(108, 88, 142, 88, color=GREEN)
+    fig.text(111, 79, "attribute request", size=7.4, color=MUTED)
+    fig.arrow(254, 88, 292, 88, color=BLUE)
+    fig.rich_text(258, 79, [("CT", None), ("F", "sub"), (", π", None), ("auth", "sub")], size=7.4, color=MUTED)
+    fig.arrow(348, 121, 348, 145, color=ORANGE)
+    fig.rich_text(352, 134, [("approved S", None), ("F", "sub")], size=7.4, color=MUTED)
+    fig.arrow(404, 88, 432, 88, color=RED)
+    fig.rich_text(408, 79, [("O", None), ("F", "sub")], size=7.4, color=MUTED)
+    fig.arrow(270, 145, 270, 121, color=SKY)
+    fig.rich_text(224, 135, [("θ′", None), ("t", "sub"), (", R, π", None), ("rep", "sub")], size=7.4, color=MUTED)
+
+    # Boundary callouts.
+    fig.rect(22, 213, 224, 34, fill=(252, 253, 255), stroke=lighten(BLUE, 0.35), width=0.6, radius=4)
+    fig.text(32, 228, "Control-plane view", size=8.4, bold=True, color=BLUE)
+    fig.rich_text(118, 228, [("Pad(e", None), ("F", "sub"), (") + commitments + proof handles", None)], size=8.0, color=INK)
+    fig.rect(270, 213, 228, 34, fill=(252, 253, 255), stroke=lighten(SKY, 0.35), width=0.6, radius=4)
+    fig.text(280, 228, "Learning-plane view", size=8.4, bold=True, color=SKY)
+    fig.rich_text(366, 228, [("approved scope S", None), ("F", "sub"), (" and cfg only", None)], size=8.0, color=INK)
+
+    # Evidence object.
+    fig.rect(28, 267, 464, 78, fill=(252, 253, 255), stroke=GRID, width=0.8, radius=6)
+    fig.rich_text(40, 283, [("UCAP evidence object O", None), ("F", "sub")], size=9.4, bold=True)
     fields = [
-        ([("c", None), ("P", "sub"), ("=H(P)", None)], "policy commitment"),
-        ([("c", None), ("s", "sub"), ("=H(scope)", None)], "scope commitment"),
-        ("H(ch)", "channel hash"),
-        ([("H(θ", None), ("t", "sub"), (")", None)], "pre-repair model commitment"),
-        ([("H(θ′", None), ("t", "sub"), (")", None)], "post-repair model commitment"),
-        ("H(R)", "risk-report commitment"),
+        ([("c", None), ("P", "sub")], "policy commitment"),
+        ([("c", None), ("s", "sub")], "scope commitment"),
+        ([("h", None), ("F", "sub")], "request handle"),
+        ([("H(θ", None), ("t", "sub"), (")", None)], "pre-repair model"),
+        ([("H(θ′", None), ("t", "sub"), (")", None)], "post-repair model"),
+        ([("H(T", None), ("rep", "sub"), (")", None)], "repair trace"),
         ([("π", None), ("auth", "sub")], "authorization proof"),
         ([("π", None), ("rep", "sub")], "repair proof"),
         ([("σ", None), ("AS", "sub")], "AS signature"),
-        ([("h", None), ("prev", "sub")], "UCAP chain pointer"),
+        ([("h", None), ("prev", "sub")], "chain pointer"),
     ]
     for i, (field, desc) in enumerate(fields):
-        col = i % 2
-        row = i // 2
-        x = 48 + col * 218
-        y = 181 + row * 16
-        fig.rect(x, y - 9, 66, 13, fill=lighten(BLUE if col == 0 else GREEN, 0.72), stroke=GRID, width=0.3, radius=2)
-        if isinstance(field, list):
-            fig.rich_text(x + 3, y + 1, field, size=8.0, bold=True, color=INK)
-        else:
-            fig.text(x + 3, y + 1, field, size=8.0, bold=True, color=INK)
-        fig.text(x + 75, y + 1, desc, size=8.0, color=MUTED)
-    fig.text(44, 265, "The server sees commitments and proof handles; RiskGap reports model residue.", size=8.0, color=MUTED)
+        col = i % 5
+        row = i // 5
+        x = 42 + col * 90
+        y = 304 + row * 20
+        fig.rect(x, y - 10, 32, 14, fill=lighten(BLUE if row == 0 else GREEN, 0.72), stroke=GRID, width=0.3, radius=2)
+        fig.rich_text(x + 4, y + 1, field, size=8.0, bold=True)
+        fig.text(x + 38, y + 1, desc, size=7.4, color=MUTED)
+    fig.text(40, 342, "UCAP denotes an unlearning control-and-audit proof chain; it stores evidence, not plaintext policy content.", size=7.7, color=MUTED)
     fig.save()
 
 
@@ -631,7 +643,7 @@ def fig5_leakage(raw):
 
 def write_manifest():
     captions = [
-        ("Fig. 1", "MA-ABE-FU control plane and UCAP evidence fields; every evidence-field abbreviation is decoded in the figure."),
+        ("Fig. 1", "MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure."),
         ("Fig. 2", "Policy-authenticated update-hiding game; G0-G5 show the purpose of each reduction hop."),
         ("Fig. 3", "Unlearning repair quality under Dirichlet non-IID α=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds."),
         ("Fig. 4", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
