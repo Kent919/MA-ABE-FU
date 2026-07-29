@@ -4,6 +4,13 @@ Target manuscript: MA-ABE-FU: Policy-Authenticated and Evidence-Bound Federated 
 
 Public repository: https://github.com/Kent919/MA-ABE-FU
 
+This repository is intended for reviewer-facing reproducibility. It contains the
+code, dataset placement instructions, generated numerical results, and figure
+artifacts needed to inspect and rerun the experiments. Manuscript submission
+files such as the main Word/PDF document, cover letter, title page, and author
+biographies are handled through the journal submission system and are not part
+of this repository.
+
 ## Contents
 
 - `run_validation_v8.py`: federated partitioning, learning-plane baselines, leakage attacks, proxy ablations, RiskGap sensitivity, and cryptographic benchmarks.
