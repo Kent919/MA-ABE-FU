@@ -1,6 +1,6 @@
 # MA-ABE-FU reproducibility package
 
-Target manuscript: MA-ABE-FU: Policy-Authenticated and Evidence-Bound Federated Unlearning for Cross-Border Identity Authentication
+Target manuscript: MA-ABE-FU: Policy-Authenticated and Evidence-Bound Federated Unlearning for Multi-Cloud Cross-Border Identity Authentication
 
 Public repository: https://github.com/Kent919/MA-ABE-FU
 
@@ -42,4 +42,15 @@ python run_validation_v8.py
 python redraw_ieee_figures_v8.py
 ```
 
-The scripts regenerate the experimental tables and exactly five main figures as vector PDFs plus 600 dpi TIFF files. If BAFS files are absent, the runner writes `bafs_status_v8.json` and skips BAFS numeric results.
+The scripts regenerate the experimental tables and the five reviewer-facing figure artifacts as vector PDFs plus 600 dpi TIFF files. If BAFS files are absent, the runner writes `bafs_status_v8.json` and skips BAFS numeric results.
+
+## Experimental boundary
+
+The federated utility, membership-inference residue, proxy calibration, and
+RiskGap tables are computed from the public UCI datasets after the documented
+non-IID client partitioning. The malicious-server leakage experiment is a
+controlled metadata-observability benchmark derived from the same run metadata
+and a process-independent SHA-256 random seed; it is not a production server-log
+measurement. Cryptographic timing is hardware-dependent. The checked-in CSV
+files are the exact numerical outputs used for the manuscript tables and
+figures.

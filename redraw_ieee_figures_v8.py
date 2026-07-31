@@ -652,7 +652,7 @@ def write_manifest():
     with open(REPRO / "figure_manifest_v8.csv", "w", encoding="utf-8") as f:
         f.write("figure,vector_pdf,tiff_600dpi,caption_check\n")
         for fig, caption in captions:
-            f.write(f"{fig},figure/{fig}.pdf,figure/{fig}.tif,{caption}\n")
+            f.write(f"{fig},figures/{fig}.pdf,figures/{fig}.tif,{caption}\n")
 
 
 def main():
