@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
-"""Draw the five main MA-ABE-FU IEEE figures as vector PDFs and 600 dpi TIFFs."""
+"""Draw optional vector PDF figures from checked MA-ABE-FU CSV results."""
 
 from __future__ import annotations
 
 import math
-import os
-import shutil
-import subprocess
-import tempfile
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from PIL import Image
 from reportlab.lib.colors import Color
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
@@ -21,9 +16,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parent
 FIG = ROOT / "figures"
 REPRO = ROOT / "results"
-PDFTOCAIRO = Path(os.environ.get("PDFTOCAIRO") or shutil.which("pdftocairo") or "pdftocairo")
 
-DPI = 600
 WIDTH_IN = 7.16
 WIDTH = WIDTH_IN * 72
 
@@ -250,36 +243,6 @@ class VFigure:
     def save(self):
         self.c.showPage()
         self.c.save()
-        render_to_tiff(self.pdf_path, FIG / f"{self.name}.tif")
-
-
-def render_to_tiff(pdf_path: Path, tiff_path: Path):
-    if not PDFTOCAIRO.exists():
-        import pypdfium2 as pdfium
-
-        pdf = pdfium.PdfDocument(str(pdf_path))
-        page = pdf[0]
-        bitmap = page.render(scale=DPI / 72).to_pil()
-        bitmap.save(tiff_path, compression="tiff_lzw", dpi=(DPI, DPI))
-        return
-    fc_cache = ROOT / ".fontconfig-cache"
-    fc_cache.mkdir(exist_ok=True)
-    env = os.environ.copy()
-    env["XDG_CACHE_HOME"] = str(fc_cache)
-    env["FC_CACHEDIR"] = str(fc_cache)
-    with tempfile.TemporaryDirectory() as tmp:
-        prefix = Path(tmp) / "page"
-        subprocess.run(
-            [str(PDFTOCAIRO), "-r", str(DPI), "-tiff", str(pdf_path), str(prefix)],
-            check=True,
-            env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            timeout=90,
-        )
-        generated = Path(str(prefix) + "-1.tif")
-        with Image.open(generated) as im:
-            im.save(tiff_path, compression="tiff_lzw", dpi=(DPI, DPI))
 
 
 def clear_generated_figures():
@@ -644,16 +607,16 @@ def fig5_leakage(raw):
 
 def write_manifest():
     captions = [
-        ("Fig. 1", "fig1.pdf", "fig1.tif", "MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure."),
-        ("Fig. 2", "fig2.pdf", "fig2.tif", "Policy-authenticated request- and policy-hiding game; G0-G5 show the purpose of each reduction hop."),
-        ("Fig. 3", "fig3.pdf", "fig3.tif", "Unlearning repair quality under Dirichlet non-IID alpha_D=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds."),
-        ("Fig. 4", "fig4.pdf", "fig4.tif", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
-        ("Fig. 5", "fig5.pdf", "fig5.tif", "Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention."),
+        ("Fig. 1", "fig1.pdf", "MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure."),
+        ("Fig. 2", "fig2.pdf", "Policy-authenticated request- and policy-hiding game; G0-G5 show the purpose of each reduction hop."),
+        ("Fig. 3", "fig3.pdf", "Unlearning repair quality under Dirichlet non-IID alpha_D=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds."),
+        ("Fig. 4", "fig4.pdf", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
+        ("Fig. 5", "fig5.pdf", "Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention."),
     ]
     with open(REPRO / "figure_manifest.csv", "w", encoding="utf-8") as f:
-        f.write("figure,vector_pdf,tiff_600dpi,caption_check\n")
-        for fig, pdf_name, tif_name, caption in captions:
-            f.write(f"{fig},figures/{pdf_name},figures/{tif_name},{caption}\n")
+        f.write("figure,vector_pdf,caption_check\n")
+        for fig, pdf_name, caption in captions:
+            f.write(f"{fig},figures/{pdf_name},{caption}\n")
 
 
 def main():

@@ -23,7 +23,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from PIL import Image, ImageDraw, ImageFont
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
@@ -38,20 +37,7 @@ except Exception:  # pragma: no cover - dependency availability is reported in m
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "public_data"
-FIG = ROOT / "figures"
 REPRO = ROOT / "results"
-
-INK = (16, 23, 35)
-MUTED = (83, 92, 108)
-GRID = (217, 224, 233)
-PALE = (248, 250, 253)
-BLUE = (30, 95, 180)
-TEAL = (0, 137, 123)
-RED = (190, 52, 70)
-AMBER = (204, 132, 0)
-PURPLE = (104, 80, 170)
-GREEN = (74, 140, 70)
-SLATE = (75, 85, 99)
 
 METHODS = [
     "FedAvg-Full",
@@ -62,16 +48,6 @@ METHODS = [
     "MA-ABE-FU",
     "Oracle-Retrain",
 ]
-
-COLORS = {
-    "FedAvg-Full": BLUE,
-    "SISA-Retrain": GREEN,
-    "FedEraser-proxy": AMBER,
-    "FedRecovery-proxy": PURPLE,
-    "Starfish-proxy": RED,
-    "MA-ABE-FU": TEAL,
-    "Oracle-Retrain": INK,
-}
 
 DATASETS = [
     ("German Credit", 12, [3, 7, 11], [0.25, 0.50, 1.00], 14, 0.075),
@@ -92,19 +68,6 @@ def stable_seed(*items):
     """Return a process-independent RNG seed for reproducible attack benchmarks."""
     msg = "|".join(map(str, items)).encode("utf-8")
     return int.from_bytes(hashlib.sha256(msg).digest()[:8], "big") % (2**32)
-
-
-def fnt(size: int, bold: bool = False):
-    names = [
-        "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
-        "/System/Library/Fonts/Supplemental/Helvetica.ttf",
-    ]
-    for name in names:
-        try:
-            return ImageFont.truetype(name, size)
-        except OSError:
-            pass
-    return ImageFont.load_default()
 
 
 def sigmoid(z):
@@ -830,268 +793,6 @@ def crypto_microbench():
     return pd.DataFrame(rows)
 
 
-def crop_save(img, path):
-    arr = np.asarray(img)
-    mask = np.any(arr < 248, axis=2)
-    ys, xs = np.where(mask)
-    if len(xs):
-        pad = 55
-        img = img.crop((max(0, xs.min() - pad), max(0, ys.min() - pad), min(img.width, xs.max() + pad), min(img.height, ys.max() + pad)))
-    img.save(path, compression="tiff_lzw", dpi=(600, 600))
-
-
-def text(d, xy, s, size=32, fill=INK, bold=False, anchor=None):
-    d.text(xy, s, fill=fill, font=fnt(size, bold), anchor=anchor)
-
-
-def multiline(d, xy, s, size=30, fill=INK, bold=False, spacing=8):
-    d.multiline_text(xy, s, fill=fill, font=fnt(size, bold), spacing=spacing)
-
-
-def fig1_protocol():
-    img = Image.new("RGB", (3600, 2050), "white")
-    d = ImageDraw.Draw(img)
-    text(d, (110, 70), "MA-ABE-FU protocol surface", 70, bold=True)
-    text(d, (110, 155), "Authorization, federated repair, and audit evidence are produced by separate algorithms but bound by one transcript.", 36, MUTED)
-    boxes = [
-        (120, 380, 760, 820, "Algorithm 1\nSystemSetup", "authorities issue\nGID-bound keys\nand public params", BLUE),
-        (980, 380, 1620, 820, "Algorithm 2\nForgetRequest", "requester creates\npolicy capsule and\npadded envelope", TEAL),
-        (1840, 380, 2480, 820, "Algorithm 3\nEvidenceBoundRepair", "server executes\nretained-client repair\nthrough fixed channel", AMBER),
-        (2700, 380, 3340, 820, "Algorithm 4\nAuditVerify", "auditor checks proof,\nhash chain, residual\nrisk report", RED),
-    ]
-    for x0, y0, x1, y1, head, body, color in boxes:
-        d.rounded_rectangle((x0, y0, x1, y1), radius=24, fill=PALE, outline=color, width=7)
-        multiline(d, (x0 + 44, y0 + 42), head, 42, color, True, 6)
-        multiline(d, (x0 + 44, y0 + 178), body, 33, INK, False, 8)
-    for x in [760, 1620, 2480]:
-        d.line((x + 35, 600, x + 180, 600), fill=INK, width=8)
-        d.polygon([(x + 180, 600), (x + 137, 574), (x + 137, 626)], fill=INK)
-    d.rounded_rectangle((270, 1120, 3330, 1740), radius=28, fill=(250, 252, 255), outline=GRID, width=4)
-    text(d, (335, 1185), "UCAP evidence object", 44, bold=True)
-    multiline(
-        d,
-        (335, 1265),
-        "O_F = <H(P), H(scope), H(channel), H(θt), H(θ′t),\n"
-        "       H(residual report), πauth, πrepair, σAS, hprev>\n\n"
-        "The learning module may be retraining, certified repair, or a future optimizer;\n"
-        "the contribution is the verifiable control plane wrapped around it.",
-        35,
-        INK,
-        False,
-        10,
-    )
-    crop_save(img, FIG / "Fig. 1.tif")
-
-
-def fig2_security_game():
-    img = Image.new("RGB", (3600, 2050), "white")
-    d = ImageDraw.Draw(img)
-    text(d, (110, 70), "Security game and reduction structure", 70, bold=True)
-    text(d, (110, 155), "The main game hides whether a valid forget capsule or a normal update envelope was issued.", 36, MUTED)
-    stages = [
-        ("G0 real", "challenger samples b\nand gives selected view", BLUE),
-        ("G1 hash", "replace hashes by\nrandom-oracle values", TEAL),
-        ("G2 ABE", "swap encrypted capsule\nunder MA-ABE security", AMBER),
-        ("G3 channel", "use padded envelope\nand timing window", PURPLE),
-        ("G4 audit", "bind proof and UCAP\nsignature chain", RED),
-    ]
-    x = 140
-    for i, (head, body, color) in enumerate(stages):
-        x0 = x + i * 685
-        d.rounded_rectangle((x0, 420, x0 + 500, 860), radius=22, fill=PALE, outline=color, width=7)
-        text(d, (x0 + 42, 470), head, 43, color, True)
-        multiline(d, (x0 + 42, 565), body, 33, INK, False, 8)
-        if i < len(stages) - 1:
-            d.line((x0 + 525, 640, x0 + 660, 640), fill=INK, width=7)
-            d.polygon([(x0 + 660, 640), (x0 + 620, 616), (x0 + 620, 664)], fill=INK)
-    d.rounded_rectangle((330, 1130, 3270, 1700), radius=24, fill=(252, 253, 255), outline=GRID, width=4)
-    text(d, (405, 1200), "Bound stated in the paper", 44, bold=True)
-    multiline(
-        d,
-        (405, 1290),
-        "AdvMA-ABE-FU(A) ≤ AdvMA-ABE(B1) + AdvRO(B2) + AdvPAD(B3)\n"
-        "                    + AdvSIG(B4) + AdvSNARK(B5) + εresidual + negl(λ)\n\n"
-        "The proof appendix gives explicit simulators for policy authorization, update-type hiding,\n"
-        "audit unforgeability, and residual-risk non-overclaiming.",
-        35,
-        INK,
-        False,
-        10,
-    )
-    crop_save(img, FIG / "Fig. 2.tif")
-
-
-def fig3_main_results(summary):
-    agg = summary.groupby(["dataset", "method"], sort=False).agg(
-        retained_auc_mean=("retained_auc_mean", "mean"),
-        retained_bacc_mean=("retained_bacc_mean", "mean"),
-        mia_gap_mean=("mia_gap_mean", "mean"),
-        l2_to_oracle_mean=("l2_to_oracle_mean", "mean"),
-        runtime_to_oracle_mean=("runtime_to_oracle_mean", "mean"),
-    ).reset_index()
-    img = Image.new("RGB", (3600, 2250), "white")
-    d = ImageDraw.Draw(img)
-    text(d, (110, 70), "Federated unlearning quality across proxy baselines", 68, bold=True)
-    text(d, (110, 150), "Means are averaged over three seeds and three forget ratios; oracle retraining is the retained-set reference.", 36, MUTED)
-
-    def panel(box, dataset, metric, label, lo, hi, lower=False):
-        x0, y0, x1, y1 = box
-        d.rounded_rectangle((x0, y0, x1, y1), radius=18, fill=(253, 254, 255), outline=GRID, width=3)
-        text(d, (x0 + 35, y0 + 34), f"{dataset}: {label}", 38, bold=True)
-        px0, px1 = x0 + 430, x1 - 220
-        py0, py1 = y0 + 120, y1 - 90
-        for i in range(5):
-            val = lo + i * (hi - lo) / 4
-            xx = px0 + (val - lo) / (hi - lo) * (px1 - px0)
-            d.line((xx, py0, xx, py1), fill=GRID, width=2)
-            text(d, (xx - 38, py1 + 26), f"{val:.2f}", 28, MUTED)
-        d.line((px0, py1, px1, py1), fill=INK, width=4)
-        sub = agg[agg.dataset == dataset].set_index("method").loc[METHODS]
-        for i, method in enumerate(METHODS):
-            y = py0 + (i + 0.5) * (py1 - py0) / len(METHODS)
-            text(d, (x0 + 34, y - 18), method, 30, COLORS[method] if method == "MA-ABE-FU" else INK, method == "MA-ABE-FU")
-            v = float(sub.loc[method, metric])
-            xx = px0 + (min(max(v, lo), hi) - lo) / (hi - lo) * (px1 - px0)
-            d.line((px0, y, xx, y), fill=COLORS[method], width=5)
-            d.ellipse((xx - 19, y - 19, xx + 19, y + 19), fill=COLORS[method], outline=INK, width=2)
-            text(d, (px1 + 34, y - 18), f"{v:.3f}", 29, INK, True)
-        text(d, (x0 + 35, y1 - 44), "better left" if lower else "better right", 26, MUTED)
-
-    panel((120, 390, 1730, 1110), "German Credit", "retained_auc_mean", "retained AUC", 0.72, 0.78, False)
-    panel((1870, 390, 3480, 1110), "German Credit", "l2_to_oracle_mean", "distance to oracle", 0.00, 0.16, True)
-    panel((120, 1320, 1730, 2040), "Bank Marketing", "retained_auc_mean", "retained AUC", 0.78, 0.83, False)
-    panel((1870, 1320, 3480, 2040), "Bank Marketing", "runtime_to_oracle_mean", "runtime / oracle", 0.00, 1.20, True)
-    crop_save(img, FIG / "Fig. 3.tif")
-
-
-def fig4_forget_ratio(summary):
-    img = Image.new("RGB", (3600, 2100), "white")
-    d = ImageDraw.Draw(img)
-    text(d, (110, 70), "Sensitivity to forget ratio under non-IID client partitions", 68, bold=True)
-    text(d, (110, 150), "The x-axis is the fraction of policy-eligible training records requested for removal.", 36, MUTED)
-    focus = ["SISA-Retrain", "FedEraser-proxy", "FedRecovery-proxy", "Starfish-proxy", "MA-ABE-FU", "Oracle-Retrain"]
-
-    def line_panel(box, dataset, metric, label, lo, hi):
-        x0, y0, x1, y1 = box
-        d.rounded_rectangle((x0, y0, x1, y1), radius=18, fill=(253, 254, 255), outline=GRID, width=3)
-        text(d, (x0 + 35, y0 + 34), f"{dataset}: {label}", 38, bold=True)
-        px0, px1 = x0 + 125, x1 - 80
-        py0, py1 = y0 + 125, y1 - 105
-        for i in range(5):
-            yy = py1 - i * (py1 - py0) / 4
-            val = lo + i * (hi - lo) / 4
-            d.line((px0, yy, px1, yy), fill=GRID, width=2)
-            text(d, (x0 + 35, yy - 15), f"{val:.2f}", 26, MUTED)
-        d.line((px0, py1, px1, py1), fill=INK, width=4)
-        d.line((px0, py0, px0, py1), fill=INK, width=4)
-        ratios = [0.25, 0.50, 1.00]
-        for r in ratios:
-            xx = px0 + (r - 0.25) / 0.75 * (px1 - px0)
-            d.line((xx, py1, xx, py1 + 16), fill=INK, width=3)
-            text(d, (xx - 24, py1 + 26), f"{r:.2f}", 25, MUTED)
-        for method in focus:
-            pts = []
-            for r in ratios:
-                row = summary[(summary.dataset == dataset) & (summary.method == method) & (summary.forget_ratio == r)]
-                if row.empty:
-                    continue
-                val = float(row.iloc[0][metric])
-                xx = px0 + (r - 0.25) / 0.75 * (px1 - px0)
-                yy = py1 - (min(max(val, lo), hi) - lo) / (hi - lo) * (py1 - py0)
-                pts.append((xx, yy))
-            if len(pts) > 1:
-                d.line(pts, fill=COLORS[method], width=6)
-            for xx, yy in pts:
-                d.ellipse((xx - 11, yy - 11, xx + 11, yy + 11), fill=COLORS[method], outline=INK, width=2)
-
-    line_panel((120, 380, 1740, 1350), "German Credit", "mia_gap_mean", "membership residual gap", 0.00, 0.12)
-    line_panel((1860, 380, 3480, 1350), "Bank Marketing", "l2_to_oracle_mean", "distance to oracle", 0.00, 0.18)
-    x0, y0 = 430, 1540
-    for i, method in enumerate(focus):
-        xx = x0 + (i % 3) * 920
-        yy = y0 + (i // 3) * 150
-        d.line((xx, yy, xx + 90, yy), fill=COLORS[method], width=8)
-        d.ellipse((xx + 34, yy - 16, xx + 66, yy + 16), fill=COLORS[method], outline=INK, width=2)
-        text(d, (xx + 120, yy - 20), method, 32, INK)
-    crop_save(img, FIG / "Fig. 4.tif")
-
-
-def fig5_malicious(summary):
-    agg = summary.groupby(["method"], sort=False).agg(
-        type_leak=("type_leak_auc_mean", "mean"),
-        attr_leak=("attribute_leak_auc_mean", "mean"),
-    ).reindex(METHODS).reset_index()
-    img = Image.new("RGB", (3400, 1900), "white")
-    d = ImageDraw.Draw(img)
-    text(d, (110, 70), "Malicious-server observability", 68, bold=True)
-    text(d, (110, 150), "Lower AUC means weaker ability to distinguish forget requests or infer the policy attribute from metadata.", 36, MUTED)
-    x0, y0, x1, y1 = 420, 360, 3140, 1480
-    d.line((x0, y1, x1, y1), fill=INK, width=5)
-    d.line((x0, y0, x0, y1), fill=INK, width=5)
-    for i in range(6):
-        val = 0.5 + i * 0.1
-        yy = y1 - (val - 0.5) / 0.5 * (y1 - y0)
-        d.line((x0, yy, x1, yy), fill=GRID, width=2)
-        text(d, (x0 - 80, yy - 18), f"{val:.1f}", 30, MUTED)
-    group = (x1 - x0) / len(METHODS)
-    for i, row in agg.iterrows():
-        method = row["method"]
-        bx = x0 + i * group + group * 0.18
-        bw = group * 0.25
-        for j, col in enumerate(["type_leak", "attr_leak"]):
-            val = float(row[col])
-            h = (val - 0.5) / 0.5 * (y1 - y0)
-            color = COLORS[method] if j == 0 else tuple(int(c * 0.72) for c in COLORS[method])
-            d.rectangle((bx + j * (bw + 8), y1 - h, bx + j * (bw + 8) + bw, y1), fill=color, outline=INK)
-        multiline(d, (bx - 18, y1 + 35), method.replace("-", "\n"), 24, INK, False, 3)
-    d.rectangle((1200, 1580, 1245, 1610), fill=SLATE)
-    text(d, (1265, 1572), "request-type leakage AUC", 31, INK)
-    d.rectangle((1840, 1580, 1885, 1610), fill=(105, 111, 122))
-    text(d, (1905, 1572), "attribute leakage AUC", 31, INK)
-    crop_save(img, FIG / "Fig. 5.tif")
-
-
-def fig6_crypto(crypto):
-    crypto = crypto[crypto["backend"] == "primitive_modexp_proxy"].copy()
-    img = Image.new("RGB", (3500, 2100), "white")
-    d = ImageDraw.Draw(img)
-    text(d, (110, 70), "Measured control-plane overhead", 68, bold=True)
-    text(d, (110, 150), "Primitive-level benchmark: modular-exponentiation capsule proxy, HMAC padding, RSA-PSS UCAP signature, verification, and hash-chain append.", 34, MUTED)
-    x0, y0, x1, y1 = 370, 360, 3140, 1500
-    maxv = float(crypto["total_control_plane_ms"].max()) * 1.15
-    d.line((x0, y1, x1, y1), fill=INK, width=5)
-    d.line((x0, y0, x0, y1), fill=INK, width=5)
-    for i in range(5):
-        val = i * maxv / 4
-        yy = y1 - val / maxv * (y1 - y0)
-        d.line((x0, yy, x1, yy), fill=GRID, width=2)
-        text(d, (x0 - 120, yy - 18), f"{val:.1f}", 29, MUTED)
-    components = [
-        ("ma_abe_capsule_proxy_ms", BLUE, "capsule proxy"),
-        ("padded_envelope_hmac_ms", TEAL, "padded envelope"),
-        ("ucap_rsa_pss_sign_ms", RED, "UCAP sign"),
-        ("ucap_rsa_pss_verify_ms", AMBER, "UCAP verify"),
-        ("hash_chain_append_ms", PURPLE, "hash chain"),
-    ]
-    bw = 230
-    xs = np.linspace(x0 + 230, x1 - 230, len(crypto))
-    for xi, (_, row) in zip(xs, crypto.iterrows()):
-        base_y = y1
-        for col, color, _ in components:
-            h = float(row[col]) / maxv * (y1 - y0)
-            d.rectangle((xi - bw / 2, base_y - h, xi + bw / 2, base_y), fill=color, outline="white")
-            base_y -= h
-        text(d, (xi - 32, y1 + 38), str(int(row["policy_rows"])), 30, MUTED)
-    text(d, (1470, y1 + 90), "LSSS policy rows", 34, MUTED, True)
-    text(d, (130, y0 - 60), "milliseconds", 34, MUTED, True)
-    for i, (_, color, lab) in enumerate(components):
-        xx = 510 + (i % 3) * 840
-        yy = 1660 + (i // 3) * 125
-        d.rectangle((xx, yy, xx + 46, yy + 32), fill=color)
-        text(d, (xx + 65, yy - 4), lab, 31, INK)
-    crop_save(img, FIG / "Fig. 6.tif")
-
-
 def write_outputs(raw, summary, crypto, metadata, ablation, riskgrid):
     REPRO.mkdir(parents=True, exist_ok=True)
     raw.to_csv(REPRO / "federated_raw.csv", index=False)
@@ -1104,7 +805,6 @@ def write_outputs(raw, summary, crypto, metadata, ablation, riskgrid):
 
 
 def main():
-    FIG.mkdir(parents=True, exist_ok=True)
     REPRO.mkdir(parents=True, exist_ok=True)
     frames, metadata = [], {}
     dataset_configs = list(DATASETS)

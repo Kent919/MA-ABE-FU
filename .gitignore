@@ -12,6 +12,7 @@ venv/
 *.pyo
 
 # Submission/package artifacts are not part of the reproducibility repository.
+figures/
 *.docx
 *.zip
 *.aux

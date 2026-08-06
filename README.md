@@ -4,14 +4,13 @@ This repository supports the experiments for:
 
 **MA-ABE-FU: Policy-Hiding Access Control for Auditable Federated Unlearning in Multi-Cloud Identity Services**
 
-It contains the code, dataset placement instructions, checked numerical outputs, and figure-generation scripts needed to inspect and rerun the experimental evidence. Journal submission files are intentionally excluded.
+It contains the code, dataset placement instructions, and checked numerical outputs needed to inspect and rerun the experimental evidence. Journal submission files and generated figure images are intentionally excluded.
 
 ## Contents
 
 - `run_validation.py`: data partitioning, learning-plane baselines, leakage attacks, proxy ablations, RiskGap sensitivity, and cryptographic benchmarks.
-- `redraw_figures.py`: IEEE-style vector PDF and 600 dpi TIFF figure generation from checked CSV results.
-- `results/*.csv|*.json`: numerical outputs used by the tables and figures.
-- `figures/fig*.pdf|fig*.tif`: five generated figure artifacts.
+- `redraw_figures.py`: optional vector PDF figure preview generation from checked CSV results.
+- `results/*.csv|*.json`: numerical outputs used by the reported tables and plots.
 - `DATASETS.md`: public dataset placement notes.
 - `requirements.txt`: Python dependencies.
 
@@ -23,8 +22,6 @@ Install dependencies:
 python -m pip install -r requirements.txt
 ```
 
-Install Poppler, or set `PDFTOCAIRO` to the absolute path of `pdftocairo`, before redrawing TIFF figures. If Poppler is unavailable, `redraw_figures.py` falls back to `pypdfium2` when installed.
-
 Place public datasets under `public_data/`:
 
 - `public_data/german.data`
@@ -35,10 +32,20 @@ Run:
 
 ```bash
 python run_validation.py
-python redraw_figures.py
 ```
 
 If BAFS files are absent, the runner writes `results/bafs_status.json` and skips BAFS numeric claims. The checked-in CSV and JSON files are the reference outputs for the submitted experiments.
+
+## Optional Figure Preview
+
+The paper figures are submission artifacts, so generated figure files are not stored in this repository. To regenerate vector PDF previews from the checked CSV results:
+
+```bash
+python -m pip install reportlab
+python redraw_figures.py
+```
+
+This optional step writes `figures/fig1.pdf` through `figures/fig5.pdf` and updates `results/figure_manifest.csv`. It is not required to reproduce the experimental metrics.
 
 ## Experimental Scope
 

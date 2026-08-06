@@ -1,6 +1,6 @@
-figure,vector_pdf,tiff_600dpi,caption_check
-Fig. 1,figures/fig1.pdf,figures/fig1.tif,MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure.
-Fig. 2,figures/fig2.pdf,figures/fig2.tif,Policy-authenticated request- and policy-hiding game; G0-G5 show the purpose of each reduction hop.
-Fig. 3,figures/fig3.pdf,figures/fig3.tif,Unlearning repair quality under Dirichlet non-IID alpha_D=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds.
-Fig. 4,figures/fig4.pdf,figures/fig4.tif,Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom.
-Fig. 5,figures/fig5.pdf,figures/fig5.tif,Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention.
+figure,vector_pdf,caption_check
+Fig. 1,figures/fig1.pdf,MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure.
+Fig. 2,figures/fig2.pdf,Policy-authenticated request- and policy-hiding game; G0-G5 show the purpose of each reduction hop.
+Fig. 3,figures/fig3.pdf,Unlearning repair quality under Dirichlet non-IID alpha_D=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds.
+Fig. 4,figures/fig4.pdf,Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom.
+Fig. 5,figures/fig5.pdf,Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention.
