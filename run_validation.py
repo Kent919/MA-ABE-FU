@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Federated MA-ABE-FU validation for the TCC manuscript.
+"""Federated MA-ABE-FU validation for the reproducibility package.
 
 The script deliberately separates two questions that are often conflated:
 
@@ -8,7 +8,7 @@ The script deliberately separates two questions that are often conflated:
 
 Baselines named after published systems are implemented as reproducible
 faithful proxies because official, unified code is not available in this local
-environment. The manuscript states this explicitly.
+environment. The paper states this explicitly.
 """
 
 from __future__ import annotations
@@ -377,7 +377,7 @@ def bafs_status():
             "The common public entry is the Feedzai/BAF project with Kaggle-hosted data; "
             "Kaggle authentication is required in many environments."
         ),
-        "run_behavior": "If at least one expected CSV is present, run_validation_v8.py evaluates the first available file.",
+        "run_behavior": "If at least one expected CSV is present, run_validation.py evaluates the first available file.",
     }
 
 
@@ -905,7 +905,7 @@ def fig2_security_game():
             d.line((x0 + 525, 640, x0 + 660, 640), fill=INK, width=7)
             d.polygon([(x0 + 660, 640), (x0 + 620, 616), (x0 + 620, 664)], fill=INK)
     d.rounded_rectangle((330, 1130, 3270, 1700), radius=24, fill=(252, 253, 255), outline=GRID, width=4)
-    text(d, (405, 1200), "Bound stated in the manuscript", 44, bold=True)
+    text(d, (405, 1200), "Bound stated in the paper", 44, bold=True)
     multiline(
         d,
         (405, 1290),
@@ -1094,13 +1094,13 @@ def fig6_crypto(crypto):
 
 def write_outputs(raw, summary, crypto, metadata, ablation, riskgrid):
     REPRO.mkdir(parents=True, exist_ok=True)
-    raw.to_csv(REPRO / "federated_raw_v8.csv", index=False)
-    summary.to_csv(REPRO / "federated_summary_v8.csv", index=False)
-    crypto.to_csv(REPRO / "crypto_overhead_v8.csv", index=False)
-    ablation.to_csv(REPRO / "proxy_ablation_v8.csv", index=False)
-    riskgrid.to_csv(REPRO / "riskgap_sensitivity_v8.csv", index=False)
-    (REPRO / "validation_metadata_v8.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    (REPRO / "bafs_status_v8.json").write_text(json.dumps(bafs_status(), indent=2), encoding="utf-8")
+    raw.to_csv(REPRO / "federated_raw.csv", index=False)
+    summary.to_csv(REPRO / "federated_summary.csv", index=False)
+    crypto.to_csv(REPRO / "crypto_overhead.csv", index=False)
+    ablation.to_csv(REPRO / "proxy_ablation.csv", index=False)
+    riskgrid.to_csv(REPRO / "riskgap_sensitivity.csv", index=False)
+    (REPRO / "validation_metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    (REPRO / "bafs_status.json").write_text(json.dumps(bafs_status(), indent=2), encoding="utf-8")
 
 
 def main():
@@ -1123,12 +1123,6 @@ def main():
     metadata["BAFS_status"] = bafs_status()
     metadata["pairing_backend"] = {"py_ecc_available": PY_ECC_AVAILABLE, "curve": "BN254 / optimized_bn128" if PY_ECC_AVAILABLE else None}
     write_outputs(raw, summary, crypto, metadata, ablation, riskgrid)
-    fig1_protocol()
-    fig2_security_game()
-    fig3_main_results(summary)
-    fig4_forget_ratio(summary)
-    fig5_malicious(summary)
-    fig6_crypto(crypto)
     print("Proxy ablation summary:")
     print(ablation.to_string(index=False))
     print("RiskGap sensitivity summary:")

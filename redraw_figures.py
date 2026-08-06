@@ -284,8 +284,9 @@ def render_to_tiff(pdf_path: Path, tiff_path: Path):
 
 def clear_generated_figures():
     FIG.mkdir(parents=True, exist_ok=True)
-    for old in FIG.glob("Fig. *.*"):
-        old.unlink()
+    for pattern in ("Fig. *.*", "fig[1-5].*"):
+        for old in FIG.glob(pattern):
+            old.unlink()
 
 
 def panel_title(fig, x, y, panel, title, subtitle=""):
@@ -327,7 +328,7 @@ def method_legend(fig, x, y, methods, columns=3):
 
 
 def fig1_protocol():
-    fig = VFigure("Fig. 1", 4.85)
+    fig = VFigure("fig1", 4.85)
     fig.text(16, 21, "System model and evidence-bound interaction in MA-ABE-FU", size=12.0, bold=True)
     fig.text(16, 35, "The control plane authenticates and hides the forget policy; the learning plane performs only the approved unlearning repair.", size=8.0, color=MUTED)
 
@@ -391,7 +392,7 @@ def fig1_protocol():
 
 
 def fig2_security_game():
-    fig = VFigure("Fig. 2", 3.90)
+    fig = VFigure("fig2", 3.90)
     fig.text(16, 21, "Policy-authenticated update-hiding game and reduction purpose", size=12.0, bold=True)
     fig.text(16, 35, "Each hop bounds one observable advantage: commitments, policy capsule, channel shape, audit forgery, and false proofs.", size=8.0, color=MUTED)
 
@@ -438,7 +439,7 @@ def fig2_security_game():
 
 
 def fig3_results(raw):
-    fig = VFigure("Fig. 3", 5.85)
+    fig = VFigure("fig3", 5.85)
     fig.text(16, 20, "Unlearning repair quality under non-IID federated partitions", size=12.0, bold=True)
     fig.text(16, 34, "Dirichlet α=0.35; forget ratios 0.25, 0.50, and 1.00; error bars show 95% confidence intervals over seeds.", size=8.0, color=MUTED)
     method_legend(fig, 76, 58, METHODS, columns=3)
@@ -496,7 +497,7 @@ def fig3_results(raw):
 
 
 def fig4_crypto(crypto):
-    fig = VFigure("Fig. 4", 4.85)
+    fig = VFigure("fig4", 4.85)
     fig.text(16, 20, "Measured cryptographic overhead of the control plane", size=12.0, bold=True)
     fig.text(16, 34, "Primitive proxy and BN254 pairing backend are measured on the same local runtime; timings are end-to-end per forget request.", size=8.0, color=MUTED)
 
@@ -573,7 +574,7 @@ def fig4_crypto(crypto):
 
 
 def fig5_leakage(raw):
-    fig = VFigure("Fig. 5", 4.65)
+    fig = VFigure("fig5", 4.65)
     fig.text(16, 20, "Malicious-server leakage: request type and hidden policy attributes", size=12.0, bold=True)
     fig.text(16, 34, "Non-IID α=0.35; forget ratios 0.25, 0.50, and 1.00; points and bars report mean AUC with 95% confidence intervals over all runs.", size=8.0, color=MUTED)
 
@@ -643,22 +644,22 @@ def fig5_leakage(raw):
 
 def write_manifest():
     captions = [
-        ("Fig. 1", "MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure."),
-        ("Fig. 2", "Policy-authenticated update-hiding game; G0-G5 show the purpose of each reduction hop."),
-        ("Fig. 3", "Unlearning repair quality under Dirichlet non-IID α=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds."),
-        ("Fig. 4", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
-        ("Fig. 5", "Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention."),
+        ("Fig. 1", "fig1.pdf", "fig1.tif", "MA-ABE-FU system model and UCAP evidence fields; every entity interaction and evidence-field abbreviation is decoded in the figure."),
+        ("Fig. 2", "fig2.pdf", "fig2.tif", "Policy-authenticated request- and policy-hiding game; G0-G5 show the purpose of each reduction hop."),
+        ("Fig. 3", "fig3.pdf", "fig3.tif", "Unlearning repair quality under Dirichlet non-IID alpha_D=0.35, forget ratios 0.25/0.50/1.00, and 95% confidence intervals over seeds."),
+        ("Fig. 4", "fig4.pdf", "fig4.tif", "Measured control-plane cryptographic overhead for primitive proxy and BN254 pairing backend; log-scale total plus audit-chain zoom."),
+        ("Fig. 5", "fig5.pdf", "fig5.tif", "Malicious-server request-type and attribute leakage under the same non-IID partitions, forget ratios, and 95% confidence interval convention."),
     ]
-    with open(REPRO / "figure_manifest_v8.csv", "w", encoding="utf-8") as f:
+    with open(REPRO / "figure_manifest.csv", "w", encoding="utf-8") as f:
         f.write("figure,vector_pdf,tiff_600dpi,caption_check\n")
-        for fig, caption in captions:
-            f.write(f"{fig},figures/{fig}.pdf,figures/{fig}.tif,{caption}\n")
+        for fig, pdf_name, tif_name, caption in captions:
+            f.write(f"{fig},figures/{pdf_name},figures/{tif_name},{caption}\n")
 
 
 def main():
     clear_generated_figures()
-    raw = pd.read_csv(REPRO / "federated_raw_v8.csv")
-    crypto = pd.read_csv(REPRO / "crypto_overhead_v8.csv")
+    raw = pd.read_csv(REPRO / "federated_raw.csv")
+    crypto = pd.read_csv(REPRO / "crypto_overhead.csv")
     fig1_protocol()
     fig2_security_game()
     fig3_results(raw)
